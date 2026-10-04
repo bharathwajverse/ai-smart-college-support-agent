@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CampusResolve AI - Smart College Support & Grievance Agent</title>
+    <title>CampusResolve - University Support & Grievance Portal</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
@@ -11,108 +11,109 @@
     <link rel="stylesheet" href="/static/css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
-<body class="min-h-screen flex flex-col bg-slate-950 text-slate-100">
+<body class="min-h-screen flex flex-col bg-[#090d16] text-slate-100">
 
     <!-- Top Navigation Header -->
     <header class="glass-panel sticky top-0 z-40 border-b border-slate-800/80 px-6 py-3.5 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/30">
-                ⚡
+        <div class="flex items-center space-x-3.5">
+            <div class="w-9 h-9 rounded-lg bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400 font-semibold shadow-inner">
+                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <circle cx="12" cy="11" r="3"/>
+                </svg>
             </div>
             <div>
-                <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
-                    CampusResolve <span class="text-indigo-400">AI</span>
-                </h1>
-                <p class="text-[11px] text-slate-400 tracking-wide font-medium">Smart Autonomous College Support & Complaint Management Agent</p>
+                <div class="flex items-center gap-2">
+                    <h1 class="text-base font-bold tracking-tight text-white">CampusResolve</h1>
+                    <span class="text-[10px] uppercase font-semibold px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 border border-indigo-800/40 tracking-wider">Service Desk</span>
+                </div>
+                <p class="text-[11px] text-slate-400 font-normal">Apex University • Central Support & Grievance Redressal</p>
             </div>
         </div>
 
-        <!-- Academic Badge -->
-        <div class="hidden md:flex items-center gap-2 bg-indigo-950/60 border border-indigo-700/40 rounded-full px-3 py-1">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="text-xs font-semibold text-indigo-300">FAI Capstone Project: Multi-Agent System (Modules I-X)</span>
+        <!-- Center System Status -->
+        <div class="hidden md:flex items-center gap-2 bg-slate-900/80 border border-slate-800 rounded-full px-3 py-1 text-xs text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span class="text-xs text-slate-300 font-medium">Support Services Operational</span>
         </div>
 
-        <!-- Emergency SOS & System Status -->
+        <!-- Right Action: Urgent Safety Assistance -->
         <div class="flex items-center space-x-3">
-            <button id="btn-report-emergency" onclick="openEmergencyModal()" class="px-3.5 py-1.5 bg-red-600 hover:bg-red-500 text-white rounded-lg text-xs font-bold shadow-lg shadow-red-600/30 flex items-center gap-1.5 animate-pulse transition-all cursor-pointer">
-                <span>🚨</span> Report Emergency
+            <button id="btn-report-emergency" onclick="openEmergencyModal()" class="px-3.5 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 text-rose-300 border border-rose-800/50 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-colors cursor-pointer">
+                <svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                <span>Urgent Safety Assistance</span>
             </button>
-            <div class="hidden sm:flex items-center space-x-2 text-xs text-slate-400">
-                <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                <span class="font-medium text-slate-300">Agent Pipeline Online</span>
-            </div>
         </div>
     </header>
 
-    <!-- Global Emergency Alert Banner (Active when emergency tickets detected) -->
-    <div id="global-emergency-banner" class="hidden bg-gradient-to-r from-red-950 via-red-900 to-red-950 border-b border-red-700/80 px-6 py-2.5 text-xs text-red-200 flex items-center justify-between">
-        <div class="flex items-center gap-2">
-            <span class="inline-block w-2.5 h-2.5 rounded-full bg-red-400 animate-ping"></span>
-            <span class="font-bold text-white tracking-wide">🚨 ACTIVE EMERGENCY GRIEVANCE DETECTED:</span>
-            <span id="emergency-banner-text" class="text-red-100 font-medium"></span>
-        </div>
-        <button onclick="viewActiveEmergencyTicket()" class="px-3 py-1 bg-red-800 hover:bg-red-700 text-white rounded font-semibold text-[11px] transition-colors cursor-pointer">
-            View Triage & Action Plan &rarr;
-        </button>
-    </div>
-
     <!-- Main Navigation Tabs -->
-    <nav class="bg-slate-900/80 border-b border-slate-800 px-6 py-2 flex items-center space-x-2 overflow-x-auto text-sm">
-        <button data-tab="chat" class="nav-tab-btn px-4 py-2 rounded-lg font-medium text-white bg-indigo-600 transition-all flex items-center gap-2">
-            💬 AI Support Chat
+    <nav class="bg-[#0c1220] border-b border-slate-800 px-6 py-2 flex items-center space-x-1.5 overflow-x-auto text-sm">
+        <button data-tab="chat" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-medium text-white bg-indigo-600 transition-all flex items-center gap-2 text-xs">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Support Assistant</span>
         </button>
-        <button data-tab="submit" class="nav-tab-btn px-4 py-2 rounded-lg font-medium text-slate-400 hover:bg-slate-800 transition-all flex items-center gap-2">
-            ✍️ Submit Grievance
+        <button data-tab="submit" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-medium text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 transition-all flex items-center gap-2 text-xs">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            <span>Submit Ticket</span>
         </button>
-        <button data-tab="track" class="nav-tab-btn px-4 py-2 rounded-lg font-medium text-slate-400 hover:bg-slate-800 transition-all flex items-center gap-2">
-            📋 Track Tickets
+        <button data-tab="track" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-medium text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 transition-all flex items-center gap-2 text-xs">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span>Track Cases</span>
         </button>
-        <button data-tab="admin" class="nav-tab-btn px-4 py-2 rounded-lg font-medium text-slate-400 hover:bg-slate-800 transition-all flex items-center gap-2">
-            🏛️ Admin Triage Hub
+        <button data-tab="admin" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-medium text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 transition-all flex items-center gap-2 text-xs">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span>Resolution Console</span>
         </button>
-        <button data-tab="inspector" class="nav-tab-btn px-4 py-2 rounded-lg font-medium text-slate-400 hover:bg-slate-800 transition-all flex items-center gap-2">
-            🧠 FAI Agent Inspector
+        <button data-tab="inspector" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-medium text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 transition-all flex items-center gap-2 text-xs">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="3" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Workflow Engine</span>
         </button>
-        <button data-tab="analytics" class="nav-tab-btn px-4 py-2 rounded-lg font-medium text-slate-400 hover:bg-slate-800 transition-all flex items-center gap-2">
-            📊 Campus Telemetry
+        <button data-tab="analytics" class="nav-tab-btn px-3.5 py-1.5 rounded-lg font-medium text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 transition-all flex items-center gap-2 text-xs">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            <span>Analytics</span>
         </button>
     </nav>
 
     <!-- Main Content Container -->
     <main class="flex-1 p-6 max-w-7xl w-full mx-auto">
 
-        <!-- ================= SECTION 1: AI SUPPORT CHAT ================= -->
+        <!-- ================= SECTION 1: SUPPORT ASSISTANT ================= -->
         <section id="section-chat" class="tab-content-section">
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 <!-- Chat Window -->
-                <div class="lg:col-span-3 glass-panel rounded-2xl border border-slate-800 flex flex-col h-[650px] shadow-2xl overflow-hidden">
-                    <div class="p-4 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between">
+                <div class="lg:col-span-3 glass-panel rounded-2xl border border-slate-800/80 flex flex-col h-[650px] shadow-xl overflow-hidden">
+                    <div class="p-4 border-b border-slate-800/80 bg-slate-900/60 flex items-center justify-between">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 rounded-lg bg-indigo-600/30 text-indigo-400 flex items-center justify-center font-bold">🤖</div>
+                            <div class="w-8 h-8 rounded-lg bg-indigo-600/20 text-indigo-400 flex items-center justify-center font-semibold text-xs border border-indigo-500/30">
+                                AD
+                            </div>
                             <div>
-                                <h3 class="text-sm font-bold text-white">Campus Policy & Student Advisory Agent</h3>
-                                <p class="text-xs text-slate-400">Powered by Module VI Ontological Rules & Knowledge Base</p>
+                                <h3 class="text-sm font-semibold text-white">Student Advisory & Information Desk</h3>
+                                <p class="text-xs text-slate-400">Institutional policies, housing guidelines, and academic regulations</p>
                             </div>
                         </div>
-                        <span class="text-xs px-2.5 py-1 rounded bg-slate-800 text-slate-300">Apex Institute Knowledge Base</span>
+                        <span class="text-xs px-2.5 py-1 rounded-md bg-slate-800/80 text-slate-300 border border-slate-700/50">Verified Knowledge Base</span>
                     </div>
 
                     <!-- Chat messages scroll area -->
                     <div id="chat-messages-container" class="flex-1 p-5 overflow-y-auto space-y-4">
                         <div class="flex justify-start mb-4">
-                            <div class="max-w-[80%] rounded-2xl rounded-tl-none px-5 py-3.5 bg-slate-800 text-slate-200 border border-slate-700 shadow-md">
-                                <div class="text-xs font-semibold uppercase tracking-wider mb-1 text-slate-400">🤖 CampusResolve Support Agent</div>
+                            <div class="max-w-[80%] rounded-2xl rounded-tl-none px-5 py-3.5 bg-slate-800/90 text-slate-200 border border-slate-700/60 shadow-sm">
+                                <div class="text-xs font-semibold uppercase tracking-wider mb-1 text-indigo-300">Support Coordinator</div>
                                 <div class="text-sm leading-relaxed">
-                                    Hello! I am your <strong>Smart Campus Support Agent</strong>. You can ask me about:
+                                    Hello! Welcome to the <strong>Campus Support Desk</strong>. I can assist you with immediate institutional answers and procedural guidance on:
                                     <ul class="list-disc ml-5 mt-2 space-y-1 text-xs text-slate-300">
-                                        <li>Exam attendance minimums and medical condonation rules</li>
-                                        <li>Hostel curfews, gate passes, and room maintenance</li>
-                                        <li>Campus WiFi registration and device MAC setup</li>
-                                        <li>Fee refund timelines and duplicate debit reconciliations</li>
-                                        <li>Confidential Anti-Ragging and emergency procedures</li>
+                                        <li>Semester attendance thresholds and medical condonation rules</li>
+                                        <li>Hostel housing maintenance, curfew, and gate pass approvals</li>
+                                        <li>Campus Wi-Fi authentication and device registration</li>
+                                        <li>Tuition and examination fee double-debit reconciliations</li>
+                                        <li>Confidential student welfare and anti-ragging procedures</li>
                                     </ul>
                                 </div>
                             </div>
@@ -120,86 +121,88 @@
                     </div>
 
                     <!-- Chat input bar -->
-                    <div class="p-4 border-t border-slate-800 bg-slate-900/80 flex items-center gap-3">
-                        <input id="chat-input" type="text" placeholder="Ask about attendance criteria, hostel wifi, fee refunds..." class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 transition-colors">
-                        <button id="chat-send-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-3 rounded-xl text-sm transition-all shadow-md shadow-indigo-600/30 flex items-center gap-1">
-                            <span>Send</span> ➔
+                    <div class="p-4 border-t border-slate-800/80 bg-slate-900/80 flex items-center gap-3">
+                        <input id="chat-input" type="text" placeholder="Inquire about attendance policies, hostel maintenance, fee receipts..." class="flex-1 bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 transition-colors">
+                        <button id="chat-send-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-5 py-3 rounded-xl text-sm transition-all shadow-md shadow-indigo-600/20 flex items-center gap-1.5 cursor-pointer">
+                            <span>Ask</span>
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                         </button>
                     </div>
                 </div>
 
-                <!-- Suggested Quick Prompts -->
-                <div class="glass-panel rounded-2xl border border-slate-800 p-5 flex flex-col justify-between">
+                <!-- Suggested Quick Inquiries -->
+                <div class="glass-panel rounded-2xl border border-slate-800/80 p-5 flex flex-col justify-between">
                     <div>
-                        <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-3">Quick Policy Prompts</h4>
-                        <div class="space-y-2.5">
-                            <button class="quick-chat-prompt w-full text-left p-3 rounded-xl bg-slate-900/60 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-700/50 text-xs text-slate-300 transition-all">
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-3">Frequently Inquired Topics</h4>
+                        <div class="space-y-2">
+                            <button class="quick-chat-prompt w-full text-left p-3 rounded-xl bg-slate-900/60 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-700/50 text-xs text-slate-300 transition-all cursor-pointer">
                                 "What is the minimum attendance required for semester exams?"
                             </button>
-                            <button class="quick-chat-prompt w-full text-left p-3 rounded-xl bg-slate-900/60 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-700/50 text-xs text-slate-300 transition-all">
-                                "How do I register my laptop MAC address for hostel WiFi?"
+                            <button class="quick-chat-prompt w-full text-left p-3 rounded-xl bg-slate-900/60 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-700/50 text-xs text-slate-300 transition-all cursor-pointer">
+                                "How do I register my laptop MAC address for hostel Wi-Fi?"
                             </button>
-                            <button class="quick-chat-prompt w-full text-left p-3 rounded-xl bg-slate-900/60 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-700/50 text-xs text-slate-300 transition-all">
+                            <button class="quick-chat-prompt w-full text-left p-3 rounded-xl bg-slate-900/60 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-700/50 text-xs text-slate-300 transition-all cursor-pointer">
                                 "What should I do if my exam fee was deducted twice?"
                             </button>
-                            <button class="quick-chat-prompt w-full text-left p-3 rounded-xl bg-slate-900/60 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-700/50 text-xs text-slate-300 transition-all">
+                            <button class="quick-chat-prompt w-full text-left p-3 rounded-xl bg-slate-900/60 hover:bg-indigo-950/40 border border-slate-800 hover:border-indigo-700/50 text-xs text-slate-300 transition-all cursor-pointer">
                                 "What are the hostel in-times and curfew rules?"
                             </button>
-                            <button class="quick-chat-prompt w-full text-left p-3 rounded-xl bg-red-950/30 hover:bg-red-950/60 border border-red-800/40 text-xs text-red-300 transition-all">
-                                "Where can I report ragging or harassment confidentially?"
+                            <button class="quick-chat-prompt w-full text-left p-3 rounded-xl bg-slate-900/60 hover:bg-rose-950/40 border border-slate-800 hover:border-rose-800/50 text-xs text-slate-300 transition-all cursor-pointer">
+                                "Where can I report student safety concerns confidentially?"
                             </button>
                         </div>
                     </div>
 
-                    <div class="mt-6 pt-4 border-t border-slate-800 text-xs text-slate-400">
-                        <span class="font-semibold text-slate-300">Need to file an official ticket?</span> Switch to the <button onclick="switchTab('submit')" class="text-indigo-400 underline font-semibold">Submit Grievance</button> tab to launch the A* planning engine.
+                    <div class="mt-6 pt-4 border-t border-slate-800/80 text-xs text-slate-400">
+                        <span class="font-medium text-slate-300">Need official department action?</span> Switch to the <button onclick="switchTab('submit')" class="text-indigo-400 hover:underline font-semibold">Submit Ticket</button> tab to generate a tracked case.
                     </div>
                 </div>
             </div>
         </section>
 
 
-        <!-- ================= SECTION 2: SUBMIT GRIEVANCE ================= -->
+        <!-- ================= SECTION 2: SUBMIT TICKET ================= -->
         <section id="section-submit" class="tab-content-section hidden">
             <div class="max-w-4xl mx-auto">
-                <!-- Demo Preset Quick-Launch Toolbar -->
-                <div class="glass-panel rounded-xl p-4 border border-indigo-900/40 mb-6 flex flex-wrap items-center justify-between gap-3">
-                    <span class="text-xs font-bold text-indigo-300 flex items-center gap-1.5">
-                        ⚡ Examiner Quick Test Presets:
+                <!-- Scenario Templates Toolbar -->
+                <div class="glass-panel rounded-xl p-4 border border-slate-800/80 mb-6 flex flex-wrap items-center justify-between gap-3">
+                    <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                        Common Scenario Templates:
                     </span>
                     <div class="flex flex-wrap gap-2">
-                        <button type="button" data-preset="ragging" class="demo-preset-btn px-3 py-1.5 bg-red-900/40 hover:bg-red-800/60 border border-red-700 text-red-300 text-xs font-semibold rounded-lg transition-colors">
-                            🚨 Anti-Ragging Emergency
+                        <button type="button" data-preset="wifi" class="demo-preset-btn px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-medium rounded-lg transition-colors cursor-pointer">
+                            Hostel Wi-Fi Outage
                         </button>
-                        <button type="button" data-preset="wifi" class="demo-preset-btn px-3 py-1.5 bg-blue-900/40 hover:bg-blue-800/60 border border-blue-700 text-blue-300 text-xs font-semibold rounded-lg transition-colors">
-                            📡 Hostel WiFi Outage (Clustering)
+                        <button type="button" data-preset="mess" class="demo-preset-btn px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-medium rounded-lg transition-colors cursor-pointer">
+                            Dining Service Quality
                         </button>
-                        <button type="button" data-preset="mess" class="demo-preset-btn px-3 py-1.5 bg-amber-900/40 hover:bg-amber-800/60 border border-amber-700 text-amber-300 text-xs font-semibold rounded-lg transition-colors">
-                            🍲 Mess Food Quality Issue
+                        <button type="button" data-preset="fees" class="demo-preset-btn px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 text-xs font-medium rounded-lg transition-colors cursor-pointer">
+                            Exam Fee Double Debit
                         </button>
-                        <button type="button" data-preset="fees" class="demo-preset-btn px-3 py-1.5 bg-emerald-900/40 hover:bg-emerald-800/60 border border-emerald-700 text-emerald-300 text-xs font-semibold rounded-lg transition-colors">
-                            💳 Exam Fee Double Debit
+                        <button type="button" data-preset="ragging" class="demo-preset-btn px-3 py-1.5 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/50 text-rose-300 text-xs font-medium rounded-lg transition-colors cursor-pointer">
+                            Confidential Safety Report
                         </button>
                     </div>
                 </div>
 
                 <!-- Complaint Submission Form -->
-                <div class="glass-panel rounded-2xl border border-slate-800 p-8 shadow-2xl">
-                    <div class="mb-6 pb-4 border-b border-slate-800">
-                        <h2 class="text-xl font-bold text-white">Register Campus Grievance or Support Request</h2>
-                        <p class="text-xs text-slate-400 mt-1">Our autonomous agent will perform NLP classification, forward-chaining rule inference, Bayesian escalation analysis, and synthesize an A* resolution workflow.</p>
+                <div class="glass-panel rounded-2xl border border-slate-800/80 p-8 shadow-xl">
+                    <div class="mb-6 pb-4 border-b border-slate-800/80">
+                        <h2 class="text-lg font-bold text-white">Lodge Official Grievance or Service Request</h2>
+                        <p class="text-xs text-slate-400 mt-1">Your case will be automatically routed to the responsible department, assigned an SLA timeline, and tracked until verified resolution.</p>
                     </div>
 
                     <form id="complaint-form" class="space-y-6">
                         <!-- Anonymous Toggle -->
-                        <div class="flex items-center justify-between p-4 bg-slate-900/70 border border-slate-800 rounded-xl">
+                        <div class="flex items-center justify-between p-4 bg-slate-900/60 border border-slate-800/80 rounded-xl">
                             <div>
-                                <span class="text-sm font-semibold text-slate-200">Submit Anonymously</span>
-                                <p class="text-xs text-slate-400">Protects student identity. Mandatory for safety or whistleblowing complaints.</p>
+                                <span class="text-sm font-medium text-slate-200">Confidential Submission</span>
+                                <p class="text-xs text-slate-400">Protects student identity. Your personal details will be withheld from department personnel.</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" id="form-is-anonymous" class="sr-only peer">
-                                <div class="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+                                <div class="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
                             </label>
                         </div>
 
@@ -207,59 +210,59 @@
                         <div id="student-info-fields" class="grid grid-cols-1 md:grid-cols-2 gap-4 transition-opacity">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Student Full Name</label>
-                                <input type="text" id="form-name" placeholder="e.g. Aarav Sharma" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                                <input type="text" id="form-name" placeholder="e.g. Aarav Sharma" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Roll Number / Student ID</label>
-                                <input type="text" id="form-id" placeholder="e.g. 21CS042" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Student ID / Roll Number</label>
+                                <input type="text" id="form-id" placeholder="e.g. 21CS042" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                             </div>
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Official Email</label>
-                                <input type="email" id="form-email" placeholder="student@apex.edu" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Official Student Email</label>
+                                <input type="email" id="form-email" placeholder="student@apex.edu" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                             </div>
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Contact Phone</label>
-                                <input type="tel" id="form-phone" placeholder="+91 9876543210" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                                <input type="tel" id="form-phone" placeholder="+91 9876543210" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                             </div>
                         </div>
 
                         <!-- Issue Details -->
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Subject / Headline *</label>
-                                <input type="text" id="form-subject" required placeholder="Concise headline of your grievance" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Issue Headline / Subject *</label>
+                                <input type="text" id="form-subject" required placeholder="Concise summary of the grievance" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Campus Location (Hostel, Lab, Mess, Room No.)</label>
-                                    <input type="text" id="form-location" placeholder="e.g. Shivalik Hostel Block C, Room 304" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Campus Location (Hostel, Block, Room No.)</label>
+                                    <input type="text" id="form-location" placeholder="e.g. Shivalik Hostel Block C, Room 304" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
                                 </div>
                                 <div>
-                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Category (Optional - AI will auto-classify)</label>
-                                    <select id="form-category" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
-                                        <option value="">-- Let AI Agent Auto-Classify --</option>
+                                    <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Department Category</label>
+                                    <select id="form-category" class="w-full bg-slate-950 border border-slate-700/80 rounded-xl px-4 py-2.5 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                                        <option value="">-- Automated Department Routing --</option>
                                         <option value="Anti-Ragging & Safety">Anti-Ragging & Safety</option>
-                                        <option value="Hostel">Hostel</option>
-                                        <option value="Mess & Canteen">Mess & Canteen</option>
-                                        <option value="IT & Infrastructure">IT & Infrastructure</option>
+                                        <option value="Hostel">Hostel & Accommodation</option>
+                                        <option value="Mess & Canteen">Mess & Dining Services</option>
+                                        <option value="IT & Infrastructure">IT & Campus Network</option>
                                         <option value="Academics">Academics</option>
-                                        <option value="Examinations">Examinations</option>
-                                        <option value="Accounts & Fees">Accounts & Fees</option>
-                                        <option value="Library">Library</option>
-                                        <option value="Transport">Transport</option>
+                                        <option value="Examinations">Examinations & Grading</option>
+                                        <option value="Accounts & Fees">Accounts & Fee Administration</option>
+                                        <option value="Library">Library Services</option>
+                                        <option value="Transport">Campus Transport</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Detailed Grievance Description *</label>
-                                <textarea id="form-description" rows="5" required placeholder="Please provide specific details: dates, symptoms, room numbers, UTR references, or individuals involved..." class="w-full bg-slate-950 border border-slate-700 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Detailed Narrative *</label>
+                                <textarea id="form-description" rows="5" required placeholder="Please provide specific details: dates, symptoms, room numbers, transaction IDs, or affected students..." class="w-full bg-slate-950 border border-slate-700/80 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
                             </div>
                         </div>
 
-                        <button id="form-submit-btn" type="submit" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all text-sm flex items-center justify-center gap-2">
-                            <span>🚀 Submit to AI Agent Pipeline</span>
+                        <button id="form-submit-btn" type="submit" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl shadow-lg shadow-indigo-600/20 transition-all text-sm flex items-center justify-center gap-2 cursor-pointer">
+                            <span>Submit Ticket</span>
                         </button>
                     </form>
                 </div>
@@ -267,15 +270,16 @@
         </section>
 
 
-        <!-- ================= SECTION 3: TRACK MY TICKETS ================= -->
+        <!-- ================= SECTION 3: TRACK CASES ================= -->
         <section id="section-track" class="tab-content-section hidden">
             <div class="mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                 <div>
-                    <h2 class="text-xl font-bold text-white">Track Campus Complaints & Grievances</h2>
-                    <p class="text-xs text-slate-400 mt-1">Review live execution states, A* action plans, and submit satisfaction feedback.</p>
+                    <h2 class="text-lg font-bold text-white">Case Tracking & Progress Monitor</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Review active resolution trajectories, assigned department specialists, and SLA countdowns.</p>
                 </div>
-                <button onclick="loadTickets()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5">
-                    🔄 Refresh Tickets
+                <button onclick="loadTickets()" class="px-3.5 py-1.5 bg-slate-800/80 hover:bg-slate-700 border border-slate-700/60 text-slate-200 text-xs font-medium rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer">
+                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    <span>Refresh</span>
                 </button>
             </div>
 
@@ -286,33 +290,33 @@
         </section>
 
 
-        <!-- ================= SECTION 4: ADMIN TRIAGE HUB ================= -->
+        <!-- ================= SECTION 4: RESOLUTION CONSOLE ================= -->
         <section id="section-admin" class="tab-content-section hidden">
-            <div class="glass-panel rounded-2xl border border-slate-800 overflow-hidden shadow-2xl">
+            <div class="glass-panel rounded-2xl border border-slate-800/80 overflow-hidden shadow-xl">
                 <!-- Table Header & Controls -->
-                <div class="p-6 border-b border-slate-800 bg-slate-900/50 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+                <div class="p-6 border-b border-slate-800/80 bg-slate-900/50 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                            🏛️ Campus Grievance Triage & Dispatch Console
+                        <h2 class="text-base font-bold text-white flex items-center gap-2">
+                            <span>Campus Grievance Triage & Resolution Console</span>
                         </h2>
-                        <p class="text-xs text-slate-400 mt-0.5">Autonomous routing, Bayesian risk evaluation, and human supervisor overrides.</p>
+                        <p class="text-xs text-slate-400 mt-0.5">Administrative case management, departmental routing, and specialist assignments.</p>
                     </div>
 
                     <!-- Search and Filters -->
-                    <div class="flex flex-wrap items-center gap-3">
-                        <input id="tickets-search" type="text" placeholder="Search ticket code, student, topic..." class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 w-48">
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <input id="tickets-search" type="text" placeholder="Search ticket, name, keyword..." class="bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500 w-44">
                         
-                        <select id="filter-category" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
-                            <option value="">All Categories</option>
-                            <option value="Anti-Ragging & Safety">Anti-Ragging</option>
-                            <option value="Hostel">Hostel</option>
-                            <option value="Mess & Canteen">Mess</option>
+                        <select id="filter-category" class="bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                            <option value="">All Departments</option>
+                            <option value="Anti-Ragging & Safety">Anti-Ragging & Safety</option>
+                            <option value="Hostel">Hostel & Accommodation</option>
+                            <option value="Mess & Canteen">Mess & Dining</option>
                             <option value="IT & Infrastructure">IT & Network</option>
                             <option value="Academics">Academics</option>
-                            <option value="Accounts & Fees">Accounts</option>
+                            <option value="Accounts & Fees">Accounts & Fees</option>
                         </select>
 
-                        <select id="filter-status" class="bg-slate-950 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <select id="filter-status" class="bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
                             <option value="">All Statuses</option>
                             <option value="Submitted">Submitted</option>
                             <option value="Triaged">Triaged</option>
@@ -321,25 +325,25 @@
                             <option value="Resolved">Resolved</option>
                         </select>
 
-                        <button id="run-csp-btn" onclick="triggerCspDispatch()" class="px-3.5 py-1.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-semibold text-xs rounded-lg transition-all shadow-md shadow-indigo-900/30 flex items-center gap-1.5">
-                            <span>⚡ Run CSP Staff Dispatch (Module IV)</span>
+                        <button id="run-csp-btn" onclick="triggerCspDispatch()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs rounded-lg transition-all shadow-sm flex items-center gap-1.5 cursor-pointer">
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <span>Optimize Specialist Dispatch</span>
                         </button>
                     </div>
                 </div>
 
-
                 <!-- Table Content -->
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-900/80 text-xs uppercase font-semibold text-slate-400 border-b border-slate-800">
+                        <thead class="bg-slate-900/80 text-[11px] uppercase font-semibold text-slate-400 border-b border-slate-800">
                             <tr>
-                                <th class="px-4 py-3.5">Ticket Code</th>
+                                <th class="px-4 py-3.5">Ticket ID</th>
                                 <th class="px-4 py-3.5">Subject & Location</th>
-                                <th class="px-4 py-3.5">Category</th>
+                                <th class="px-4 py-3.5">Department</th>
                                 <th class="px-4 py-3.5">Priority</th>
-                                <th class="px-4 py-3.5">Bayesian Risk</th>
-                                <th class="px-4 py-3.5">Workflow Status</th>
-                                <th class="px-4 py-3.5 text-right">Actions</th>
+                                <th class="px-4 py-3.5">Risk Index</th>
+                                <th class="px-4 py-3.5">Status</th>
+                                <th class="px-4 py-3.5 text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody id="admin-tickets-tbody" class="divide-y divide-slate-800/60">
@@ -351,127 +355,127 @@
         </section>
 
 
-        <!-- ================= SECTION 5: FAI AGENT INSPECTOR ================= -->
+        <!-- ================= SECTION 5: WORKFLOW ENGINE ================= -->
         <section id="section-inspector" class="tab-content-section hidden">
             <div class="mb-6">
-                <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                    🧠 Foundations of AI (FAI) Syllabus Mapping & Architecture Inspector
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span>Workflow Engine & Decision Architecture</span>
                 </h2>
-                <p class="text-xs text-slate-400 mt-1">Directly verifies how Modules I through X of the academic syllabus are implemented and executed in code.</p>
+                <p class="text-xs text-slate-400 mt-0.5">Transparent inspection of automated triage logic: heuristic planning, constraint satisfaction, policy rules, and Bayesian uncertainty assessment.</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Module I: PEAS Model -->
-                <div class="glass-panel rounded-2xl border border-slate-800 p-5 shadow-xl">
+                <!-- Architecture: Operating Model -->
+                <div class="glass-panel rounded-2xl border border-slate-800/80 p-5 shadow-lg">
                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-400">Module I: Intelligent Agents</span>
-                            <h3 class="text-base font-bold text-white">PEAS Formal Specification</h3>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-indigo-400">Architecture Specification</span>
+                            <h3 class="text-sm font-bold text-white">System Operating Model (PEAS)</h3>
                         </div>
-                        <span class="text-xs px-2 py-1 rounded bg-indigo-950 text-indigo-300 font-mono">PEASModel</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-indigo-950 text-indigo-300 font-mono text-[11px]">PEASModel</span>
                     </div>
                     <div id="inspector-peas-container" class="space-y-3">
                         <!-- Loaded dynamically -->
                     </div>
                 </div>
 
-                <!-- Module III & VII: A* State Space Planning -->
-                <div class="glass-panel rounded-2xl border border-slate-800 p-5 shadow-xl">
+                <!-- Planning Operators -->
+                <div class="glass-panel rounded-2xl border border-slate-800/80 p-5 shadow-lg">
                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-400">Module III & VII: Informed Search & Planning</span>
-                            <h3 class="text-base font-bold text-white">A* State Space Planning Operators</h3>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-emerald-400">Heuristic Planning</span>
+                            <h3 class="text-sm font-bold text-white">Resolution Standard Operating Procedures (SOP)</h3>
                         </div>
-                        <span class="text-xs px-2 py-1 rounded bg-emerald-950 text-emerald-300 font-mono">f(n) = g(n) + h(n)</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 font-mono text-[11px]">f(n) = g(n) + h(n)</span>
                     </div>
                     <div id="inspector-operators-container" class="space-y-3 max-h-[350px] overflow-y-auto pr-2">
                         <!-- Loaded dynamically -->
                     </div>
                 </div>
 
-                <!-- Module V & VI: Logic & Rule Inference -->
-                <div class="glass-panel rounded-2xl border border-slate-800 p-5 shadow-xl">
+                <!-- Policy Inference Rules -->
+                <div class="glass-panel rounded-2xl border border-slate-800/80 p-5 shadow-lg">
                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-amber-400">Module V & VI: Inference & Propositional Logic</span>
-                            <h3 class="text-base font-bold text-white">Forward Chaining Production Rules</h3>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-amber-400">Policy Rules Engine</span>
+                            <h3 class="text-sm font-bold text-white">Automated Policy & Escalation Triggers</h3>
                         </div>
-                        <span class="text-xs px-2 py-1 rounded bg-amber-950 text-amber-300 font-mono">Modus Ponens</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-amber-950 text-amber-300 font-mono text-[11px]">Forward Chaining</span>
                     </div>
                     <div id="inspector-rules-container" class="space-y-3 max-h-[350px] overflow-y-auto pr-2">
                         <!-- Loaded dynamically -->
                     </div>
                 </div>
 
-                <!-- Module VIII: Bayesian Uncertainty -->
-                <div class="glass-panel rounded-2xl border border-slate-800 p-5 shadow-xl">
+                <!-- Bayesian Risk Model -->
+                <div class="glass-panel rounded-2xl border border-slate-800/80 p-5 shadow-lg">
                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400">Module VIII: Uncertainty in AI</span>
-                            <h3 class="text-base font-bold text-white">Bayesian Escalation Network</h3>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-cyan-400">Risk Assessment</span>
+                            <h3 class="text-sm font-bold text-white">Bayesian Escalation Model</h3>
                         </div>
-                        <span class="text-xs px-2 py-1 rounded bg-cyan-950 text-cyan-300 font-mono">P(E|Evidence)</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 font-mono text-[11px]">P(E|Evidence)</span>
                     </div>
                     <div class="p-4 bg-slate-900/60 rounded-xl border border-slate-800 text-xs space-y-3">
                         <p class="text-slate-300 leading-relaxed">
-                            Calculates posterior probability of grievance escalation using Bayes' Rule with conditional likelihoods for sentiment distress, lexical cues, and recurring cluster incidents:
+                            Computes the posterior escalation probability using Bayesian inference by combining historical departmental priors with observed evidence factors:
                         </p>
-                        <div class="p-3 bg-slate-950 rounded-lg font-mono text-[11px] text-cyan-300 border border-cyan-900/50">
-                            P(Escalation | D, U, R) = α · P(Escalation|Category) · P(D|E) · P(U|E) · P(R|E)
+                        <div class="p-3 bg-slate-950 rounded-lg font-mono text-[11px] text-cyan-300 border border-cyan-900/40">
+                            P(Escalation | D, U, R) = α · P(Escalation | Category) · ∏ P(Evidence | Escalation)
                         </div>
                         <ul class="space-y-1 text-slate-400 text-[11px]">
-                            <li>• <strong>P(Distress | Escalation = True)</strong>: 0.85 (vs 0.20 for non-escalated)</li>
-                            <li>• <strong>P(Urgency Cues | Escalation = True)</strong>: 0.80 (vs 0.25)</li>
-                            <li>• <strong>P(Cluster Recurrence | Escalation = True)</strong>: 0.75 (vs 0.15)</li>
-                            <li>• <strong>Category Priors</strong>: Anti-Ragging (0.85), Mess (0.50), Hostel (0.35), IT (0.25)</li>
+                            <li>• <strong>Distress Sentiment Cue</strong>: P(D | E) = 0.85</li>
+                            <li>• <strong>Urgency Lexical Markers</strong>: P(U | E) = 0.80</li>
+                            <li>• <strong>Recurring Cluster Incident</strong>: P(R | E) = 0.75</li>
+                            <li>• <strong>Prior Probabilities</strong>: Anti-Ragging (0.85), Mess (0.50), Hostel (0.35), IT (0.25)</li>
                         </ul>
                     </div>
                 </div>
 
-                <!-- Module IV: Constraint Satisfaction Problem (CSP) Staff Dispatch -->
-                <div class="glass-panel rounded-2xl border border-slate-800 p-5 shadow-xl">
+                <!-- Constraint Satisfaction Specialist Allocation -->
+                <div class="glass-panel rounded-2xl border border-slate-800/80 p-5 shadow-lg">
                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-purple-400">Module IV: Optimal Decisions & CSPs</span>
-                            <h3 class="text-base font-bold text-white">Staff Dispatch Constraint Satisfaction Problem</h3>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-purple-400">Staff Optimization</span>
+                            <h3 class="text-sm font-bold text-white">Specialist Dispatch Constraint Satisfaction (CSP)</h3>
                         </div>
-                        <span class="text-xs px-2 py-1 rounded bg-purple-950 text-purple-300 font-mono">Backtracking + MRV + LCV</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-purple-950 text-purple-300 font-mono text-[11px]">MRV + Backtracking</span>
                     </div>
                     <div class="text-xs text-slate-300 space-y-3">
                         <p class="leading-relaxed">
                             Formulates specialist dispatch as a formal CSP: <strong>Variables</strong> (Grievances), <strong>Domains</strong> (Qualified specialists), and <strong>Constraints</strong> (Domain competency, Max capacity, Senior duty clearance, Spatial jurisdiction).
                         </p>
                         <div class="flex gap-2">
-                            <button onclick="triggerCspDispatch()" class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-semibold text-xs transition-colors flex items-center gap-1.5">
-                                <span>⚡ Solve CSP Dispatch Now</span>
+                            <button onclick="triggerCspDispatch()" class="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-medium text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                                <span>Run Dispatch Optimization</span>
                             </button>
                         </div>
                         <div id="inspector-csp-result" class="p-3 bg-slate-950 rounded-xl border border-slate-800 font-mono text-[11px] text-slate-300 max-h-40 overflow-y-auto">
-                            Click above to execute CSP solver over active tickets.
+                            Execute above to evaluate specialist capacity constraints.
                         </div>
                     </div>
                 </div>
 
-                <!-- Module II vs Module III: Search Algorithm Comparator -->
-                <div class="glass-panel rounded-2xl border border-slate-800 p-5 shadow-xl">
+                <!-- Search Algorithm Comparator -->
+                <div class="glass-panel rounded-2xl border border-slate-800/80 p-5 shadow-lg">
                     <div class="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
                         <div>
-                            <span class="text-[10px] font-bold uppercase tracking-wider text-pink-400">Module II vs Module III: Search Comparator</span>
-                            <h3 class="text-base font-bold text-white">Uniform Cost Search (Uninformed) vs A* (Informed)</h3>
+                            <span class="text-[10px] font-semibold uppercase tracking-wider text-pink-400">Algorithm Comparison</span>
+                            <h3 class="text-sm font-bold text-white">Informed (A*) vs Uninformed (Uniform Cost) Search</h3>
                         </div>
-                        <span class="text-xs px-2 py-1 rounded bg-pink-950 text-pink-300 font-mono">UCS vs A*</span>
+                        <span class="text-xs px-2 py-0.5 rounded bg-pink-950 text-pink-300 font-mono text-[11px]">A* vs UCS</span>
                     </div>
                     <div class="text-xs text-slate-300 space-y-3">
                         <p class="leading-relaxed">
-                            Contrasts Uninformed Uniform Cost Search ($f=g$, $h=0$) with Informed A* Search ($f=g+h$) over the exact same institutional resolution graph.
+                            Benchmarks Informed A* Search ($f=g+h$) against Uninformed Uniform Cost Search ($f=g, h=0$) over institutional resolution trajectories.
                         </p>
                         <div class="flex gap-2">
-                            <button onclick="runSearchComparison()" class="px-3 py-1.5 bg-pink-600 hover:bg-pink-500 text-white rounded-lg font-semibold text-xs transition-colors flex items-center gap-1.5">
-                                <span>🔍 Benchmark A* vs UCS Nodes</span>
+                            <button onclick="runSearchComparison()" class="px-3.5 py-1.5 bg-pink-600 hover:bg-pink-500 text-white rounded-lg font-medium text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                                <span>Execute Benchmark Comparison</span>
                             </button>
                         </div>
                         <div id="inspector-search-compare-result" class="p-3 bg-slate-950 rounded-xl border border-slate-800 font-mono text-[11px] text-slate-300 max-h-40 overflow-y-auto">
-                            Click above to compare nodes expanded, search pruning, and optimal path cost.
+                            Execute above to compare state space expansions and pruning efficiency.
                         </div>
                     </div>
                 </div>
@@ -479,56 +483,55 @@
         </section>
 
 
-
-        <!-- ================= SECTION 6: ANALYTICS & TELEMETRY ================= -->
+        <!-- ================= SECTION 6: ANALYTICS ================= -->
         <section id="section-analytics" class="tab-content-section hidden">
             <div class="mb-6">
-                <h2 class="text-xl font-bold text-white">Campus Grievance Telemetry & Performance Dashboard</h2>
-                <p class="text-xs text-slate-400 mt-1">Real-time metrics demonstrating autonomous triage accuracy, SLA adherence, and learning loops.</p>
+                <h2 class="text-lg font-bold text-white">Institutional Support Telemetry & Performance</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Real-time indicators for departmental SLA adherence, volume trends, and student satisfaction.</p>
             </div>
 
             <!-- Metrics Counters -->
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-6">
-                <div class="glass-card rounded-xl p-4 border border-slate-800 text-center">
-                    <div class="text-2xl font-extrabold text-white" id="metric-total">0</div>
-                    <div class="text-[11px] font-semibold uppercase text-slate-400 mt-1">Total Tickets</div>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-6">
+                <div class="glass-card rounded-xl p-3.5 border border-slate-800/80 text-center">
+                    <div class="text-xl font-bold text-white" id="metric-total">0</div>
+                    <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-1">Total Cases</div>
                 </div>
-                <div class="glass-card rounded-xl p-4 border border-slate-800 text-center">
-                    <div class="text-2xl font-extrabold text-blue-400" id="metric-open">0</div>
-                    <div class="text-[11px] font-semibold uppercase text-slate-400 mt-1">Active Queue</div>
+                <div class="glass-card rounded-xl p-3.5 border border-slate-800/80 text-center">
+                    <div class="text-xl font-bold text-blue-400" id="metric-open">0</div>
+                    <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-1">Active Queue</div>
                 </div>
-                <div class="glass-card rounded-xl p-4 border border-slate-800 text-center">
-                    <div class="text-2xl font-extrabold text-emerald-400" id="metric-resolved">0</div>
-                    <div class="text-[11px] font-semibold uppercase text-slate-400 mt-1">Resolved</div>
+                <div class="glass-card rounded-xl p-3.5 border border-slate-800/80 text-center">
+                    <div class="text-xl font-bold text-emerald-400" id="metric-resolved">0</div>
+                    <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-1">Resolved</div>
                 </div>
-                <div class="glass-card rounded-xl p-4 border border-slate-800 text-center">
-                    <div class="text-2xl font-extrabold text-red-400" id="metric-escalated">0</div>
-                    <div class="text-[11px] font-semibold uppercase text-slate-400 mt-1">Escalated</div>
+                <div class="glass-card rounded-xl p-3.5 border border-slate-800/80 text-center">
+                    <div class="text-xl font-bold text-rose-400" id="metric-escalated">0</div>
+                    <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-1">Escalated</div>
                 </div>
-                <div class="glass-card rounded-xl p-4 border border-slate-800 text-center">
-                    <div class="text-2xl font-extrabold text-indigo-400" id="metric-sla">0h</div>
-                    <div class="text-[11px] font-semibold uppercase text-slate-400 mt-1">Avg SLA</div>
+                <div class="glass-card rounded-xl p-3.5 border border-slate-800/80 text-center">
+                    <div class="text-xl font-bold text-indigo-400" id="metric-sla">0h</div>
+                    <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-1">Avg SLA</div>
                 </div>
-                <div class="glass-card rounded-xl p-4 border border-slate-800 text-center">
-                    <div class="text-2xl font-extrabold text-purple-400" id="metric-clusters">0</div>
-                    <div class="text-[11px] font-semibold uppercase text-slate-400 mt-1">Clusters</div>
+                <div class="glass-card rounded-xl p-3.5 border border-slate-800/80 text-center">
+                    <div class="text-xl font-bold text-purple-400" id="metric-clusters">0</div>
+                    <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-1">Clusters</div>
                 </div>
-                <div class="glass-card rounded-xl p-4 border border-slate-800 text-center">
-                    <div class="text-2xl font-extrabold text-amber-400" id="metric-satisfaction">0</div>
-                    <div class="text-[11px] font-semibold uppercase text-slate-400 mt-1">Satisfaction</div>
+                <div class="glass-card rounded-xl p-3.5 border border-slate-800/80 text-center">
+                    <div class="text-xl font-bold text-amber-400" id="metric-satisfaction">0</div>
+                    <div class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-1">Satisfaction</div>
                 </div>
             </div>
 
             <!-- Charts Row -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="glass-panel rounded-2xl border border-slate-800 p-5">
-                    <h3 class="text-sm font-bold text-white mb-4">Grievance Distribution by Departmental Category</h3>
+                <div class="glass-panel rounded-2xl border border-slate-800/80 p-5">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4">Grievance Distribution by Department</h3>
                     <div class="h-64">
                         <canvas id="chart-categories"></canvas>
                     </div>
                 </div>
-                <div class="glass-panel rounded-2xl border border-slate-800 p-5">
-                    <h3 class="text-sm font-bold text-white mb-4">Urgency & Priority Classification Breakdown</h3>
+                <div class="glass-panel rounded-2xl border border-slate-800/80 p-5">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-4">Urgency & Priority Classification</h3>
                     <div class="h-64">
                         <canvas id="chart-priorities"></canvas>
                     </div>
@@ -539,25 +542,27 @@
     </main>
 
 
-    <!-- ================= MODAL: SUBMISSION SUCCESS & AGENT DIAGNOSTICS ================= -->
-    <div id="submission-success-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="glass-panel rounded-2xl border border-indigo-500/30 max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+    <!-- ================= MODAL: SUBMISSION CONFIRMATION ================= -->
+    <div id="submission-success-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-panel rounded-2xl border border-slate-700/80 max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex items-center justify-between pb-4 border-b border-slate-800">
-                <div class="flex items-center gap-2">
-                    <span class="text-2xl">🚀</span>
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
                     <div>
-                        <h3 class="text-base font-bold text-white">Grievance Registered & Triaged</h3>
+                        <h3 class="text-base font-bold text-white">Ticket Registered & Triaged</h3>
                         <p class="text-xs text-indigo-400 font-mono" id="modal-ticket-code"></p>
                     </div>
                 </div>
-                <button onclick="closeSuccessModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+                <button onclick="closeSuccessModal()" class="text-slate-400 hover:text-white text-lg font-bold cursor-pointer">✕</button>
             </div>
 
             <div class="mt-5 space-y-4">
-                <!-- Core Badges -->
+                <!-- Badges Row -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                     <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-                        <div class="text-[10px] text-slate-400 uppercase font-semibold">Category</div>
+                        <div class="text-[10px] text-slate-400 uppercase font-semibold">Department</div>
                         <div class="text-xs font-bold text-white mt-0.5" id="modal-category"></div>
                     </div>
                     <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
@@ -565,66 +570,66 @@
                         <div class="mt-0.5"><span id="modal-priority"></span></div>
                     </div>
                     <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-                        <div class="text-[10px] text-slate-400 uppercase font-semibold">SLA Target</div>
+                        <div class="text-[10px] text-slate-400 uppercase font-semibold">SLA Window</div>
                         <div class="text-xs font-bold text-indigo-400 mt-0.5" id="modal-sla"></div>
                     </div>
                     <div class="bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
-                        <div class="text-[10px] text-slate-400 uppercase font-semibold">Bayesian Risk</div>
-                        <div class="text-xs font-bold text-red-400 mt-0.5" id="modal-bayesian-risk"></div>
+                        <div class="text-[10px] text-slate-400 uppercase font-semibold">Risk Index</div>
+                        <div class="text-xs font-bold text-slate-300 mt-0.5" id="modal-bayesian-risk"></div>
                     </div>
                 </div>
 
                 <!-- Cluster Notice -->
                 <div id="modal-cluster-box" class="hidden p-3 bg-purple-950/40 border border-purple-800/60 rounded-xl text-xs text-purple-200">
-                    🔗 <strong>Clustered Incident:</strong> Grouped into Master Incident <span class="font-mono text-purple-300 font-bold" id="modal-cluster-id"></span> due to high semantic similarity with ongoing reports in your area.
+                    <strong>Incident Correlated:</strong> Grouped into Master Incident <span class="font-mono text-purple-300 font-bold" id="modal-cluster-id"></span> due to semantic similarity with ongoing reports in your area.
                 </div>
 
                 <!-- Department Assignment -->
                 <div class="text-xs text-slate-300">
-                    🏛️ <strong>Routed Department:</strong> <span id="modal-department" class="text-white font-semibold"></span>
+                    <strong>Assigned Department:</strong> <span id="modal-department" class="text-white font-semibold"></span>
                 </div>
 
                 <!-- Triggered Rules -->
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-1.5">Rules Inferred (Module V & VI):</h4>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Automated Policy Checks Applied:</h4>
                     <ul id="modal-rules-list" class="space-y-1"></ul>
                 </div>
 
-                <!-- A* Resolution Plan -->
+                <!-- Resolution Roadmap Steps -->
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-2">A* State Space Resolution Plan (Module III & VII):</h4>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Resolution Milestones & Roadmap:</h4>
                     <div id="modal-plan-steps" class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2"></div>
                 </div>
 
-                <!-- AI Response Preview -->
+                <!-- Official Confirmation Message -->
                 <div>
-                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">AI Communication Dispatch:</h4>
-                    <div id="modal-ai-response" class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-xs text-slate-300 whitespace-pre-wrap font-mono"></div>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">Official Student Notification:</h4>
+                    <div id="modal-ai-response" class="p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-xs text-slate-300 whitespace-pre-wrap font-sans leading-relaxed"></div>
                 </div>
 
-                <button onclick="closeSuccessModal()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl text-xs transition-colors">
-                    Done & View in Tracker
+                <button onclick="closeSuccessModal()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl text-xs transition-colors cursor-pointer">
+                    View in Ticket Tracker
                 </button>
             </div>
         </div>
     </div>
 
 
-    <!-- ================= MODAL: TICKET DETAIL & ADMIN ACTION ================= -->
-    <div id="ticket-detail-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="glass-panel rounded-2xl border border-slate-700 max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
+    <!-- ================= MODAL: TICKET DETAIL & ACTION ================= -->
+    <div id="ticket-detail-modal" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="glass-panel rounded-2xl border border-slate-700/80 max-w-3xl w-full p-6 max-h-[90vh] overflow-y-auto shadow-2xl">
             <div class="flex items-center justify-between pb-4 border-b border-slate-800">
                 <div>
                     <span class="text-xs font-mono font-bold text-indigo-400" id="detail-code"></span>
                     <h3 class="text-base font-bold text-white mt-0.5" id="detail-subject"></h3>
                 </div>
-                <button onclick="closeTicketDetailModal()" class="text-slate-400 hover:text-white text-lg font-bold">✕</button>
+                <button onclick="closeTicketDetailModal()" class="text-slate-400 hover:text-white text-lg font-bold cursor-pointer">✕</button>
             </div>
 
             <div class="mt-5 space-y-5 text-xs">
                 <!-- Description -->
                 <div class="bg-slate-900/70 p-4 rounded-xl border border-slate-800 text-slate-300">
-                    <div class="font-semibold text-slate-400 uppercase text-[10px] mb-1">Grievance Narrative</div>
+                    <div class="font-semibold text-slate-400 uppercase text-[10px] mb-1">Narrative</div>
                     <p id="detail-desc" class="whitespace-pre-wrap leading-relaxed"></p>
                 </div>
 
@@ -652,46 +657,45 @@
                     </div>
                 </div>
 
-
-                <!-- AI Diagnostics -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-indigo-950/20 border border-indigo-800/40 rounded-xl">
+                <!-- Diagnostics Row -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3 bg-slate-900/60 border border-slate-800 rounded-xl">
                     <div>
-                        <span class="text-[10px] text-slate-400">Bayesian Escalation Risk:</span>
-                        <span class="font-bold text-red-400 ml-1" id="detail-bayes-risk"></span>
+                        <span class="text-[10px] text-slate-400">Escalation Risk:</span>
+                        <span class="font-semibold text-slate-200 ml-1" id="detail-bayes-risk"></span>
                     </div>
                     <div>
-                        <span class="text-[10px] text-slate-400">Urgency Score:</span>
-                        <span class="font-bold text-indigo-400 ml-1" id="detail-urgency-score"></span>
+                        <span class="text-[10px] text-slate-400">Urgency Assessment:</span>
+                        <span class="font-semibold text-slate-200 ml-1" id="detail-urgency-score"></span>
                     </div>
                     <div>
                         <span class="text-[10px] text-slate-400">Department SLA:</span>
-                        <span class="font-bold text-slate-200 ml-1" id="detail-sla"></span>
+                        <span class="font-semibold text-slate-200 ml-1" id="detail-sla"></span>
                     </div>
                 </div>
 
                 <div id="detail-cluster-info" class="hidden p-3 bg-purple-950/40 border border-purple-800/60 rounded-xl text-purple-200">
-                    🔗 Clustered with incident <span class="font-mono font-bold" id="detail-cluster-id"></span>
+                    Correlated with Master Incident <span class="font-mono font-bold" id="detail-cluster-id"></span>
                 </div>
 
                 <!-- Rules Triggered -->
                 <div>
-                    <span class="font-bold text-amber-400 uppercase text-[10px]">Forward Chaining Rules Fired</span>
+                    <span class="font-semibold text-slate-400 uppercase text-[10px]">Institutional Policy Constraints Applied</span>
                     <ul id="detail-rules-list" class="mt-1 space-y-1"></ul>
                 </div>
 
-                <!-- A* Plan Steps -->
+                <!-- SOP Milestones -->
                 <div>
-                    <span class="font-bold text-indigo-400 uppercase text-[10px]">A* State-Space Plan Progression</span>
+                    <span class="font-semibold text-slate-400 uppercase text-[10px]">Resolution Milestones Progression</span>
                     <div id="detail-plan-steps" class="mt-2 bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2"></div>
                 </div>
 
                 <!-- Supervisor Action Form -->
                 <div class="border-t border-slate-800 pt-4">
-                    <h4 class="font-bold text-slate-200 uppercase text-[11px] mb-3">Update Ticket Status & Notes</h4>
+                    <h4 class="font-semibold text-slate-200 uppercase text-[11px] mb-3">Update Status & Supervisor Remarks</h4>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                         <div>
-                            <label class="block text-[10px] text-slate-400 uppercase mb-1">Transition Status</label>
-                            <select id="detail-status-select" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200">
+                            <label class="block text-[10px] text-slate-400 uppercase mb-1">Status</label>
+                            <select id="detail-status-select" class="w-full bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-2 text-slate-200">
                                 <option value="Submitted">Submitted</option>
                                 <option value="Triaged">Triaged</option>
                                 <option value="In Progress">In Progress</option>
@@ -702,77 +706,79 @@
                         </div>
                         <div>
                             <label class="block text-[10px] text-slate-400 uppercase mb-1">Supervisor Name</label>
-                            <input type="text" id="detail-staff-name" placeholder="Dr. Warden / IT Head" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-200">
+                            <input type="text" id="detail-staff-name" placeholder="Duty Officer / Department Head" class="w-full bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-2 text-slate-200">
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="block text-[10px] text-slate-400 uppercase mb-1">Action Remarks & Resolution Notes</label>
-                        <textarea id="detail-status-notes" rows="2" placeholder="e.g. WiFi switch replaced, canteen sample dispatched to lab..." class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-slate-200"></textarea>
+                        <label class="block text-[10px] text-slate-400 uppercase mb-1">Resolution Notes</label>
+                        <textarea id="detail-status-notes" rows="2" placeholder="Action remarks, repairs completed, or student notification..." class="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2.5 text-slate-200"></textarea>
                     </div>
-                    <button onclick="updateTicketStatus()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-xs transition-colors">
+                    <button onclick="updateTicketStatus()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-medium rounded-xl text-xs transition-colors cursor-pointer">
                         Save Status & Notify Student
                     </button>
                 </div>
 
                 <!-- Student Feedback Section (if Resolved) -->
                 <div id="detail-feedback-section" class="border-t border-slate-800 pt-4 hidden">
-                    <h4 class="font-bold text-slate-200 uppercase text-[11px] mb-2">Student Satisfaction Feedback (Module IX Learning Loop)</h4>
+                    <h4 class="font-semibold text-slate-200 uppercase text-[11px] mb-2">Student Resolution Rating</h4>
                     <p id="feedback-score-display" class="text-amber-400 font-semibold mb-2"></p>
                     <div class="flex items-center gap-2">
-                        <span class="text-slate-400 text-xs">Rate Resolution:</span>
-                        <button onclick="submitRating(1)" class="px-2 py-1 bg-slate-800 hover:bg-amber-600 text-xs rounded">⭐ 1</button>
-                        <button onclick="submitRating(2)" class="px-2 py-1 bg-slate-800 hover:bg-amber-600 text-xs rounded">⭐ 2</button>
-                        <button onclick="submitRating(3)" class="px-2 py-1 bg-slate-800 hover:bg-amber-600 text-xs rounded">⭐ 3</button>
-                        <button onclick="submitRating(4)" class="px-2 py-1 bg-slate-800 hover:bg-amber-600 text-xs rounded">⭐ 4</button>
-                        <button onclick="submitRating(5)" class="px-2 py-1 bg-slate-800 hover:bg-amber-600 text-xs rounded">⭐ 5</button>
+                        <span class="text-slate-400 text-xs">Rate Service Quality:</span>
+                        <button onclick="submitRating(1)" class="px-2 py-1 bg-slate-800 hover:bg-amber-600 text-xs rounded cursor-pointer">⭐ 1</button>
+                        <button onclick="submitRating(2)" class="px-2 py-1 bg-slate-800 hover:bg-amber-600 text-xs rounded cursor-pointer">⭐ 2</button>
+                        <button onclick="submitRating(3)" class="px-2 py-1 bg-slate-800 hover:bg-amber-600 text-xs rounded cursor-pointer">⭐ 3</button>
+                        <button onclick="submitRating(4)" class="px-2 py-1 bg-slate-800 hover:bg-amber-600 text-xs rounded cursor-pointer">⭐ 4</button>
+                        <button onclick="submitRating(5)" class="px-2 py-1 bg-slate-800 hover:bg-amber-600 text-xs rounded cursor-pointer">⭐ 5</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ================= EMERGENCY SOS REPORTING MODAL ================= -->
-    <div id="modal-emergency" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-        <div class="glass-panel max-w-lg w-full rounded-2xl border-2 border-red-600 p-6 shadow-2xl relative bg-slate-900 text-slate-100">
+    <!-- ================= URGENT SAFETY ASSISTANCE MODAL ================= -->
+    <div id="modal-emergency" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-md hidden flex items-center justify-center p-4">
+        <div class="glass-panel max-w-lg w-full rounded-2xl border border-rose-800/80 p-6 shadow-2xl relative bg-slate-900 text-slate-100">
             <button onclick="closeEmergencyModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl cursor-pointer">&times;</button>
             <div class="flex items-center gap-3 mb-4">
-                <div class="w-10 h-10 rounded-xl bg-red-600/30 text-red-400 flex items-center justify-center text-xl font-bold">
-                    🚨
+                <div class="w-9 h-9 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
                 </div>
                 <div>
-                    <h3 class="text-lg font-bold text-white">Campus Emergency Grievance Report</h3>
-                    <p class="text-xs text-red-300">Fast-tracks forward-chaining alert to Proctorial Board & Dean (SLA: &lt; 2 hrs)</p>
+                    <h3 class="text-base font-bold text-white">Urgent Safety & Proctorial Assistance</h3>
+                    <p class="text-xs text-rose-300">Fast-tracked confidential escalation to Chief Proctor and Dean of Student Welfare.</p>
                 </div>
             </div>
 
             <form id="emergency-sos-form" class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Emergency Category *</label>
-                    <select id="sos-category" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-200" required>
-                        <option value="Anti-Ragging & Safety">🚨 Anti-Ragging & Physical Intimidation (Zero-Tolerance)</option>
-                        <option value="Hostel">🔥 Hostel Emergency (Fire / Structural / Water Contamination)</option>
-                        <option value="Mess & Canteen">⚠️ Health / Food Poisoning Outbreak</option>
-                        <option value="IT & Infrastructure">⚡ Critical Campus Power / Server Infrastructure Failure</option>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Issue Classification *</label>
+                    <select id="sos-category" class="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2.5 text-sm text-slate-200" required>
+                        <option value="Anti-Ragging & Safety">Anti-Ragging & Student Harassment (Zero Tolerance)</option>
+                        <option value="Hostel">Hostel Emergency (Structural / Water / Safety Hazard)</option>
+                        <option value="Mess & Canteen">Health / Food Safety Outbreak</option>
+                        <option value="IT & Infrastructure">Critical Campus Power / Network Failure</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Specific Incident Location *</label>
-                    <input type="text" id="sos-location" placeholder="e.g. Nilgiri Hostel Block B 2nd floor, Common Room" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-200" required>
+                    <input type="text" id="sos-location" placeholder="e.g. Nilgiri Hostel Block B 2nd floor, Common Room" class="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2.5 text-sm text-slate-200" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Incident Headline / Summary *</label>
-                    <input type="text" id="sos-subject" placeholder="e.g. Urgent: Ragging harassment by seniors in common room" class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-200" required>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Incident Summary *</label>
+                    <input type="text" id="sos-subject" placeholder="Concise summary of the situation" class="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2.5 text-sm text-slate-200" required>
                 </div>
                 <div>
-                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">What is happening right now? *</label>
-                    <textarea id="sos-description" rows="3" placeholder="Briefly describe the immediate situation, people involved, or danger..." class="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-sm text-slate-200" required></textarea>
+                    <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Situation Description *</label>
+                    <textarea id="sos-description" rows="3" placeholder="Describe the immediate situation, people involved, or danger..." class="w-full bg-slate-950 border border-slate-700/80 rounded-lg p-2.5 text-sm text-slate-200" required></textarea>
                 </div>
                 <div class="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800">
-                    <span class="text-xs text-slate-300 font-medium">Protect My Identity (Submit Anonymously)</span>
-                    <input type="checkbox" id="sos-anonymous" checked class="w-4 h-4 accent-red-600 rounded">
+                    <span class="text-xs text-slate-300 font-medium">Protect Identity (Submit Anonymously)</span>
+                    <input type="checkbox" id="sos-anonymous" checked class="w-4 h-4 accent-indigo-600 rounded">
                 </div>
-                <button type="submit" id="sos-submit-btn" class="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-red-600/40 flex items-center justify-center gap-2 cursor-pointer">
-                    <span>⚡ TRANSMIT EMERGENCY DISPATCH</span>
+                <button type="submit" id="sos-submit-btn" class="w-full py-3 bg-rose-700 hover:bg-rose-600 text-white font-semibold rounded-xl text-sm transition-all shadow-md shadow-rose-900/40 flex items-center justify-center gap-2 cursor-pointer">
+                    <span>Submit Urgent Safety Report</span>
                 </button>
             </form>
         </div>

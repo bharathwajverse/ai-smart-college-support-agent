@@ -1,6 +1,6 @@
 /**
- * CampusResolve AI - Frontend Controller
- * Connects UI with FastAPI Agent Backend.
+ * CampusResolve - Enterprise Frontend Controller
+ * Connects institutional UI with FastAPI Resolution & Triage Backend.
  */
 
 const API_BASE = "";
@@ -41,10 +41,10 @@ function switchTab(tabId) {
     document.querySelectorAll(".nav-tab-btn").forEach(btn => {
         if (btn.getAttribute("data-tab") === tabId) {
             btn.classList.add("bg-indigo-600", "text-white");
-            btn.classList.remove("text-slate-400", "hover:bg-slate-800");
+            btn.classList.remove("text-slate-400", "hover:bg-slate-800/60", "hover:text-slate-200");
         } else {
             btn.classList.remove("bg-indigo-600", "text-white");
-            btn.classList.add("text-slate-400", "hover:bg-slate-800");
+            btn.classList.add("text-slate-400", "hover:bg-slate-800/60", "hover:text-slate-200");
         }
     });
 
@@ -67,37 +67,43 @@ function switchTab(tabId) {
     }
 }
 
-// --- Chat Assistant (Module VI Knowledge QA) ---
+// --- Support Assistant (Knowledge QA) ---
 function initChat() {
     const chatInput = document.getElementById("chat-input");
     const sendBtn = document.getElementById("chat-send-btn");
     const quickPrompts = document.querySelectorAll(".quick-chat-prompt");
 
-    sendBtn.addEventListener("click", () => sendChatMessage());
-    chatInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendChatMessage();
-        }
-    });
+    if (sendBtn) {
+        sendBtn.addEventListener("click", () => sendChatMessage());
+    }
+    if (chatInput) {
+        chatInput.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendChatMessage();
+            }
+        });
+    }
 
     quickPrompts.forEach(btn => {
         btn.addEventListener("click", () => {
-            chatInput.value = btn.innerText.replace(/["]/g, '').trim();
-            sendChatMessage();
+            if (chatInput) {
+                chatInput.value = btn.innerText.replace(/["]/g, '').trim();
+                sendChatMessage();
+            }
         });
     });
 }
 
 async function sendChatMessage() {
     const chatInput = document.getElementById("chat-input");
+    if (!chatInput) return;
     const query = chatInput.value.trim();
     if (!query) return;
 
     chatInput.value = "";
     appendChatMessage("student", query);
 
-    // AI typing indicator
     const typingId = appendTypingIndicator();
 
     try {
@@ -111,37 +117,41 @@ async function sendChatMessage() {
 
         let formattedMsg = data.answer;
         if (data.escalation_required) {
-            formattedMsg += `\n\n🚨 **URGENT**: ${data.suggested_action}`;
+            formattedMsg += `\n\n📌 **Recommended Action**: ${data.suggested_action}`;
         }
         appendChatMessage("agent", formattedMsg, data.category, data.confidence);
     } catch (err) {
         removeTypingIndicator(typingId);
-        appendChatMessage("agent", "Error connecting to AI Assistant. Please check if the backend is running.");
+        appendChatMessage("agent", "The support desk is currently undergoing brief maintenance. Please try again shortly or lodge a tracked ticket.");
     }
 }
 
 function appendChatMessage(sender, text, category = null, confidence = null) {
     const container = document.getElementById("chat-messages-container");
+    if (!container) return;
+
     const msgDiv = document.createElement("div");
     msgDiv.className = `flex ${sender === "student" ? "justify-end" : "justify-start"} mb-4`;
 
     const isStudent = sender === "student";
-    const bgClass = isStudent ? "bg-indigo-600 text-white rounded-tr-none" : "bg-slate-800 text-slate-200 border border-slate-700 rounded-tl-none";
+    const bgClass = isStudent 
+        ? "bg-indigo-600 text-white rounded-tr-none shadow-sm" 
+        : "bg-slate-800/90 text-slate-200 border border-slate-700/60 rounded-tl-none shadow-sm";
 
     let badgeHtml = "";
     if (category) {
         badgeHtml = `
-            <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-700 text-xs text-indigo-400">
-                <span>🏷️ Inferred Category: <strong>${category}</strong></span>
+            <div class="flex items-center gap-2 mt-2 pt-2 border-t border-slate-700/60 text-xs text-slate-400">
+                <span>Department: <strong class="text-indigo-300">${category}</strong></span>
                 ${confidence ? `<span>(Confidence: ${(confidence * 100).toFixed(0)}%)</span>` : ""}
             </div>
         `;
     }
 
     msgDiv.innerHTML = `
-        <div class="max-w-[80%] rounded-2xl px-5 py-3.5 ${bgClass} shadow-md">
-            <div class="text-xs font-semibold uppercase tracking-wider mb-1 ${isStudent ? 'text-indigo-200' : 'text-slate-400'}">
-                ${isStudent ? "You" : "🤖 CampusResolve Support Agent"}
+        <div class="max-w-[80%] rounded-2xl px-5 py-3.5 ${bgClass}">
+            <div class="text-[11px] font-semibold uppercase tracking-wider mb-1 ${isStudent ? 'text-indigo-200' : 'text-indigo-400'}">
+                ${isStudent ? "You" : "Campus Support Desk"}
             </div>
             <div class="text-sm leading-relaxed whitespace-pre-wrap">${formatMarkdown(text)}</div>
             ${badgeHtml}
@@ -153,13 +163,14 @@ function appendChatMessage(sender, text, category = null, confidence = null) {
 
 function appendTypingIndicator() {
     const container = document.getElementById("chat-messages-container");
+    if (!container) return "typing-dummy";
     const id = "typing-" + Date.now();
     const div = document.createElement("div");
     div.id = id;
     div.className = "flex justify-start mb-4";
     div.innerHTML = `
-        <div class="bg-slate-800 text-slate-400 border border-slate-700 rounded-2xl rounded-tl-none px-4 py-3 flex items-center space-x-2">
-            <span class="animate-pulse">🤖 Agent reasoning...</span>
+        <div class="bg-slate-800/90 text-slate-400 border border-slate-700/60 rounded-2xl rounded-tl-none px-4 py-2.5 flex items-center space-x-2 text-xs">
+            <span class="animate-pulse">Consulting institutional regulations...</span>
         </div>
     `;
     container.appendChild(div);
@@ -180,26 +191,30 @@ function formatMarkdown(text) {
 }
 
 
-// --- Complaint Submission & Live Agent Pipeline ---
+// --- Complaint Submission & Automated Triage ---
 function initComplaintForm() {
     const form = document.getElementById("complaint-form");
     const anonToggle = document.getElementById("form-is-anonymous");
     const studentInfoFields = document.getElementById("student-info-fields");
 
-    anonToggle.addEventListener("change", (e) => {
-        if (e.target.checked) {
-            studentInfoFields.classList.add("opacity-40", "pointer-events-none");
-        } else {
-            studentInfoFields.classList.remove("opacity-40", "pointer-events-none");
-        }
-    });
+    if (anonToggle && studentInfoFields) {
+        anonToggle.addEventListener("change", (e) => {
+            if (e.target.checked) {
+                studentInfoFields.classList.add("opacity-30", "pointer-events-none");
+            } else {
+                studentInfoFields.classList.remove("opacity-30", "pointer-events-none");
+            }
+        });
+    }
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        await submitGrievance();
-    });
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            await submitGrievance();
+        });
+    }
 
-    // Demo Pre-fill presets
+    // Preset Templates
     document.querySelectorAll(".demo-preset-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const preset = btn.getAttribute("data-preset");
@@ -215,48 +230,55 @@ function applyDemoPreset(preset) {
     const cat = document.getElementById("form-category");
     const anon = document.getElementById("form-is-anonymous");
 
-    if (preset === "ragging") {
-        subject.value = "Urgent: Ragging and harassment in Nilgiri Hostel 2nd floor";
-        desc.value = "First year juniors are being forced to stay awake past 2 AM, harassed verbally, and threatened by seniors. Requesting immediate confidential intervention.";
-        loc.value = "Nilgiri Hostel, Room 214";
-        cat.value = "Anti-Ragging & Safety";
-        anon.checked = true;
-    } else if (preset === "wifi") {
-        subject.value = "Campus WiFi completely dead in Shivalik Hostel Block C";
-        desc.value = "The WiFi router on the 3rd floor corridor has no internet connection for 24 hours. Multiple students have online project submissions due today.";
+    if (!subject || !desc || !loc || !cat || !anon) return;
+
+    if (preset === "wifi") {
+        subject.value = "Corridor Wi-Fi access point offline in Shivalik Hostel Block C";
+        desc.value = "The Wi-Fi access point on the 3rd floor corridor has been unreachable for 24 hours. Multiple students require network connectivity for project submissions.";
         loc.value = "Shivalik Hostel Block C, 3rd Floor";
         cat.value = "IT & Infrastructure";
         anon.checked = false;
     } else if (preset === "mess") {
-        subject.value = "Stale food and contaminated water in Central Mess";
-        desc.value = "Tonight at dinner, the rice smelled foul and several students complained of severe stomach pain. The water purifier in the mess hall is also leaking.";
-        loc.value = "Central Mess Hall 1";
+        subject.value = "Water filtration unit servicing required in Central Dining Hall";
+        desc.value = "The drinking water dispenser in Dining Hall 1 indicates filter replacement overdue. Kindly schedule inspection and sanitization.";
+        loc.value = "Central Dining Hall 1";
         cat.value = "Mess & Canteen";
         anon.checked = false;
     } else if (preset === "fees") {
-        subject.value = "Duplicate fee deduction for semester examination";
-        desc.value = "Exam fee of Rs. 2500 was deducted twice from my bank account (Ref UTR982347101). College portal still says pending receipt. Please refund.";
-        loc.value = "Accounts Portal";
+        subject.value = "Duplicate debit reconciliation for semester examination fee";
+        desc.value = "Examination fee was debited twice from my account (Transaction Reference UTR-982347101). The finance portal only shows one receipt. Kindly adjust.";
+        loc.value = "Finance & Accounts Portal";
         cat.value = "Accounts & Fees";
         anon.checked = false;
+    } else if (preset === "ragging") {
+        subject.value = "Confidential Inquiry: Late night disturbance and harassment in hostel";
+        desc.value = "Reporting persistent late-night harassment and noise disturbance in hostel common area. Requesting discreet proctorial verification.";
+        loc.value = "Nilgiri Hostel, Block B Common Area";
+        cat.value = "Anti-Ragging & Safety";
+        anon.checked = true;
     }
+
+    // Trigger anonymous visual state
+    anon.dispatchEvent(new Event("change"));
 }
 
 async function submitGrievance() {
     const submitBtn = document.getElementById("form-submit-btn");
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = `<span>⚙️ AI Agent Executing Pipeline (NLP ➔ Rules ➔ Bayes ➔ A* Plan)...</span>`;
+    if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>Processing Ticket & Routing...</span>`;
+    }
 
     const payload = {
-        student_name: document.getElementById("form-name").value || "Anonymous",
-        student_id: document.getElementById("form-id").value || "N/A",
-        email: document.getElementById("form-email").value || "",
-        phone: document.getElementById("form-phone").value || "",
-        is_anonymous: document.getElementById("form-is-anonymous").checked,
-        subject: document.getElementById("form-subject").value,
-        description: document.getElementById("form-description").value,
-        location: document.getElementById("form-location").value,
-        category: document.getElementById("form-category").value || null
+        student_name: document.getElementById("form-name")?.value || "Anonymous",
+        student_id: document.getElementById("form-id")?.value || "N/A",
+        email: document.getElementById("form-email")?.value || "",
+        phone: document.getElementById("form-phone")?.value || "",
+        is_anonymous: document.getElementById("form-is-anonymous")?.checked || false,
+        subject: document.getElementById("form-subject")?.value || "",
+        description: document.getElementById("form-description")?.value || "",
+        location: document.getElementById("form-location")?.value || "",
+        category: document.getElementById("form-category")?.value || null
     };
 
     try {
@@ -275,15 +297,18 @@ async function submitGrievance() {
         loadTickets();
         loadMetrics();
     } catch (err) {
-        alert("Error submitting complaint: " + err.message);
+        alert("Error submitting ticket: " + err.message);
     } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = `<span>🚀 Submit to AI Agent Pipeline</span>`;
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = `<span>Submit Ticket</span>`;
+        }
     }
 }
 
 function renderSubmissionSuccess(ticket) {
     const modal = document.getElementById("submission-success-modal");
+    if (!modal) return;
     modal.classList.remove("hidden");
 
     document.getElementById("modal-ticket-code").innerText = ticket.ticket_code;
@@ -296,53 +321,64 @@ function renderSubmissionSuccess(ticket) {
 
     // Cluster notice
     const clusterBox = document.getElementById("modal-cluster-box");
-    if (ticket.cluster_id) {
-        clusterBox.classList.remove("hidden");
-        document.getElementById("modal-cluster-id").innerText = ticket.cluster_id;
-    } else {
-        clusterBox.classList.add("hidden");
+    if (clusterBox) {
+        if (ticket.cluster_id) {
+            clusterBox.classList.remove("hidden");
+            document.getElementById("modal-cluster-id").innerText = ticket.cluster_id;
+        } else {
+            clusterBox.classList.add("hidden");
+        }
     }
 
     // Rules fired
     const rulesContainer = document.getElementById("modal-rules-list");
-    rulesContainer.innerHTML = "";
-    if (ticket.rules_triggered && ticket.rules_triggered.length > 0) {
-        ticket.rules_triggered.forEach(r => {
-            const li = document.createElement("li");
-            li.className = "text-xs text-amber-300 bg-amber-950/40 p-2 rounded border border-amber-800/40 mb-1";
-            li.innerHTML = `<strong>${r.rule_id}</strong> (${r.module}): ${r.consequent.action_required || 'Enforced policy constraint.'}`;
-            rulesContainer.appendChild(li);
-        });
-    } else {
-        rulesContainer.innerHTML = `<li class="text-xs text-slate-400 italic">Standard institutional workflow applied.</li>`;
+    if (rulesContainer) {
+        rulesContainer.innerHTML = "";
+        if (ticket.rules_triggered && ticket.rules_triggered.length > 0) {
+            ticket.rules_triggered.forEach(r => {
+                const li = document.createElement("li");
+                li.className = "text-xs text-amber-300 bg-amber-950/30 p-2 rounded-lg border border-amber-800/40 mb-1";
+                li.innerHTML = `<strong>${r.rule_id}</strong>: ${r.consequent.action_required || 'Enforced institutional policy constraint.'}`;
+                rulesContainer.appendChild(li);
+            });
+        } else {
+            rulesContainer.innerHTML = `<li class="text-xs text-slate-400 italic">Standard institutional SLA and routing guidelines applied.</li>`;
+        }
     }
 
-    // A* Plan
+    // Resolution Plan
     const planContainer = document.getElementById("modal-plan-steps");
-    planContainer.innerHTML = "";
-    if (ticket.resolution_plan && ticket.resolution_plan.length > 0) {
-        ticket.resolution_plan.forEach(step => {
-            const div = document.createElement("div");
-            div.className = "plan-timeline-step mb-3 text-xs";
-            div.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">${step.step_number}</span>
-                    <span class="font-semibold text-slate-200">${step.action}</span>
-                    <span class="text-slate-400">(${step.actor})</span>
-                    <span class="ml-auto text-indigo-400 font-mono">${step.cumulative_hours}h</span>
-                </div>
-                <div class="text-slate-400 ml-7 mt-0.5">${step.description}</div>
-            `;
-            planContainer.appendChild(div);
-        });
+    if (planContainer) {
+        planContainer.innerHTML = "";
+        if (ticket.resolution_plan && ticket.resolution_plan.length > 0) {
+            ticket.resolution_plan.forEach(step => {
+                const div = document.createElement("div");
+                div.className = "plan-timeline-step mb-3 text-xs";
+                div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">${step.step_number}</span>
+                        <span class="font-semibold text-slate-200">${step.action}</span>
+                        <span class="text-slate-400">(${step.actor})</span>
+                        <span class="ml-auto text-indigo-400 font-mono text-[11px]">${step.cumulative_hours}h</span>
+                    </div>
+                    <div class="text-slate-400 ml-7 mt-0.5">${step.description}</div>
+                `;
+                planContainer.appendChild(div);
+            });
+        }
     }
 
-    document.getElementById("modal-ai-response").innerText = ticket.ai_generated_response;
+    const aiResp = document.getElementById("modal-ai-response");
+    if (aiResp) {
+        aiResp.innerText = ticket.ai_generated_response;
+    }
 }
 
 function closeSuccessModal() {
-    document.getElementById("submission-success-modal").classList.add("hidden");
-    document.getElementById("complaint-form").reset();
+    const modal = document.getElementById("submission-success-modal");
+    if (modal) modal.classList.add("hidden");
+    const form = document.getElementById("complaint-form");
+    if (form) form.reset();
     switchTab("track");
 }
 
@@ -370,7 +406,6 @@ async function loadTickets() {
         allTickets = await response.json();
         renderTicketsTable();
         renderTrackCards();
-        updateEmergencyBanner();
     } catch (err) {
         console.error("Failed to load tickets:", err);
     }
@@ -397,16 +432,16 @@ function renderTicketsTable() {
     tbody.innerHTML = "";
 
     if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">No tickets match the selected filters.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400">No active cases match the filter criteria.</td></tr>`;
         return;
     }
 
     filtered.forEach(ticket => {
         const tr = document.createElement("tr");
-        tr.className = "border-b border-slate-800 hover:bg-slate-800/40 transition-colors";
+        tr.className = "border-b border-slate-800/80 hover:bg-slate-800/30 transition-colors";
 
         const priClass = `badge-${ticket.priority.toLowerCase()}`;
-        const clusterBadge = ticket.cluster_id ? `<span class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-purple-900/60 text-purple-300 border border-purple-700/50">🔗 ${ticket.cluster_id}</span>` : "";
+        const clusterBadge = ticket.cluster_id ? `<span class="ml-1 text-[10px] px-1.5 py-0.5 rounded bg-purple-900/60 text-purple-300 border border-purple-700/50">${ticket.cluster_id}</span>` : "";
 
         tr.innerHTML = `
             <td class="px-4 py-3 font-mono text-xs text-indigo-400 font-semibold">${ticket.ticket_code}</td>
@@ -418,20 +453,20 @@ function renderTicketsTable() {
                 ${ticket.category} ${clusterBadge}
             </td>
             <td class="px-4 py-3">
-                <span class="px-2.5 py-1 rounded-full text-xs font-bold ${priClass}">${ticket.priority}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold ${priClass}">${ticket.priority}</span>
             </td>
             <td class="px-4 py-3 text-xs">
-                <div class="font-semibold text-slate-300">${(ticket.escalation_risk * 100).toFixed(0)}%</div>
-                <div class="w-16 bg-slate-700 h-1.5 rounded-full overflow-hidden mt-1">
-                    <div class="h-full ${ticket.escalation_risk > 0.7 ? 'bg-red-500' : (ticket.escalation_risk > 0.4 ? 'bg-amber-400' : 'bg-emerald-400')}" style="width: ${ticket.escalation_risk * 100}%"></div>
+                <div class="font-medium text-slate-300">${(ticket.escalation_risk * 100).toFixed(0)}%</div>
+                <div class="w-16 bg-slate-800 h-1.5 rounded-full overflow-hidden mt-1">
+                    <div class="h-full ${ticket.escalation_risk > 0.7 ? 'bg-rose-500' : (ticket.escalation_risk > 0.4 ? 'bg-amber-400' : 'bg-emerald-400')}" style="width: ${ticket.escalation_risk * 100}%"></div>
                 </div>
             </td>
             <td class="px-4 py-3">
                 <span class="text-xs px-2.5 py-1 rounded-full font-medium ${getStatusBadgeClass(ticket.status)}">${ticket.status}</span>
             </td>
             <td class="px-4 py-3 text-right">
-                <button onclick="openTicketDetailModal('${ticket.ticket_code}')" class="px-3 py-1 bg-slate-700 hover:bg-indigo-600 text-xs rounded text-white transition-colors">
-                    Inspect & Act
+                <button onclick="openTicketDetailModal('${ticket.ticket_code}')" class="px-3 py-1 bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-500 text-xs rounded text-white transition-colors cursor-pointer">
+                    Review & Action
                 </button>
             </td>
         `;
@@ -441,13 +476,13 @@ function renderTicketsTable() {
 
 function getStatusBadgeClass(status) {
     switch (status) {
-        case "Submitted": return "bg-slate-700 text-slate-300";
-        case "Triaged": return "bg-blue-900/60 text-blue-300 border border-blue-700/50";
-        case "In Progress": return "bg-amber-900/60 text-amber-300 border border-amber-700/50";
-        case "Escalated": return "bg-red-900/60 text-red-300 border border-red-700/50";
-        case "Resolved": return "bg-emerald-900/60 text-emerald-300 border border-emerald-700/50";
-        case "Closed": return "bg-slate-800 text-slate-400";
-        default: return "bg-slate-700 text-slate-300";
+        case "Submitted": return "bg-slate-800 text-slate-300 border border-slate-700";
+        case "Triaged": return "bg-blue-950/70 text-blue-300 border border-blue-800/60";
+        case "In Progress": return "bg-amber-950/70 text-amber-300 border border-amber-800/60";
+        case "Escalated": return "bg-rose-950/70 text-rose-300 border border-rose-800/60";
+        case "Resolved": return "bg-emerald-950/70 text-emerald-300 border border-emerald-800/60";
+        case "Closed": return "bg-slate-900 text-slate-400 border border-slate-800";
+        default: return "bg-slate-800 text-slate-300";
     }
 }
 
@@ -457,33 +492,31 @@ function renderTrackCards() {
 
     container.innerHTML = "";
     if (allTickets.length === 0) {
-        container.innerHTML = `<div class="col-span-3 text-center py-12 text-slate-400">No active tickets registered yet. Submit your first complaint above!</div>`;
+        container.innerHTML = `<div class="col-span-3 text-center py-12 text-slate-400">No active tickets registered. Lodge your first request above.</div>`;
         return;
     }
 
     allTickets.forEach(ticket => {
         const card = document.createElement("div");
-        card.className = "glass-card rounded-xl p-5 border border-slate-700/60 flex flex-col justify-between";
-
-        const planCount = ticket.resolution_plan ? ticket.resolution_plan.length : 0;
+        card.className = "glass-card rounded-xl p-5 border border-slate-800/80 flex flex-col justify-between";
 
         card.innerHTML = `
             <div>
                 <div class="flex items-center justify-between mb-3">
-                    <span class="font-mono text-xs font-bold text-indigo-400">${ticket.ticket_code}</span>
-                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold badge-${ticket.priority.toLowerCase()}">${ticket.priority}</span>
+                    <span class="font-mono text-xs font-semibold text-indigo-400">${ticket.ticket_code}</span>
+                    <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold badge-${ticket.priority.toLowerCase()}">${ticket.priority}</span>
                 </div>
-                <h3 class="text-base font-semibold text-slate-100 mb-1 leading-snug">${ticket.subject}</h3>
+                <h3 class="text-sm font-semibold text-slate-100 mb-1 leading-snug">${ticket.subject}</h3>
                 <p class="text-xs text-slate-400 line-clamp-2 mb-4">${ticket.description}</p>
                 <div class="flex items-center justify-between text-xs text-slate-400 border-t border-slate-800/80 pt-3">
-                    <span>🏷️ ${ticket.category}</span>
-                    <span>⏱️ SLA: ${ticket.sla_hours}h</span>
+                    <span>${ticket.category}</span>
+                    <span>SLA: ${ticket.sla_hours}h</span>
                 </div>
             </div>
-            <div class="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between">
+            <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between">
                 <span class="text-xs px-2.5 py-1 rounded-full font-medium ${getStatusBadgeClass(ticket.status)}">${ticket.status}</span>
-                <button onclick="openTicketDetailModal('${ticket.ticket_code}')" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1">
-                    View A* Workflow ➔
+                <button onclick="openTicketDetailModal('${ticket.ticket_code}')" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-1 cursor-pointer">
+                    View Progress & Timeline ➔
                 </button>
             </div>
         `;
@@ -499,6 +532,7 @@ function openTicketDetailModal(ticketCode) {
 
     selectedTicket = ticket;
     const modal = document.getElementById("ticket-detail-modal");
+    if (!modal) return;
     modal.classList.remove("hidden");
 
     document.getElementById("detail-code").innerText = ticket.ticket_code;
@@ -508,72 +542,82 @@ function openTicketDetailModal(ticketCode) {
     document.getElementById("detail-category").innerText = ticket.category;
     document.getElementById("detail-priority").innerText = ticket.priority;
     document.getElementById("detail-priority").className = `px-3 py-1 rounded-full text-xs font-bold badge-${ticket.priority.toLowerCase()}`;
+    
     const deptEl = document.getElementById("detail-department");
     if (deptEl) deptEl.innerText = ticket.assigned_department || "General Administration";
+    
     document.getElementById("detail-location").innerText = ticket.location || "N/A";
     document.getElementById("detail-sla").innerText = `${ticket.sla_hours} Hours`;
     document.getElementById("detail-status-select").value = ticket.status;
 
-
-    // AI Reasoning & Diagnostics
+    // Risk diagnostics
     document.getElementById("detail-bayes-risk").innerText = `${(ticket.escalation_risk * 100).toFixed(1)}%`;
     document.getElementById("detail-urgency-score").innerText = ticket.bayesian_urgency_score;
     
     // Cluster
     const clusterDiv = document.getElementById("detail-cluster-info");
-    if (ticket.cluster_id) {
-        clusterDiv.classList.remove("hidden");
-        document.getElementById("detail-cluster-id").innerText = ticket.cluster_id;
-    } else {
-        clusterDiv.classList.add("hidden");
+    if (clusterDiv) {
+        if (ticket.cluster_id) {
+            clusterDiv.classList.remove("hidden");
+            document.getElementById("detail-cluster-id").innerText = ticket.cluster_id;
+        } else {
+            clusterDiv.classList.add("hidden");
+        }
     }
 
     // Rules
     const rulesList = document.getElementById("detail-rules-list");
-    rulesList.innerHTML = "";
-    if (ticket.rules_triggered && ticket.rules_triggered.length > 0) {
-        ticket.rules_triggered.forEach(r => {
-            const li = document.createElement("li");
-            li.className = "text-xs text-amber-300 mb-1";
-            li.innerHTML = `• <strong>${r.rule_id}</strong>: ${r.consequent.action_required || 'Rule activated'}`;
-            rulesList.appendChild(li);
-        });
-    } else {
-        rulesList.innerHTML = `<li class="text-xs text-slate-400 italic">No emergency override rules triggered.</li>`;
+    if (rulesList) {
+        rulesList.innerHTML = "";
+        if (ticket.rules_triggered && ticket.rules_triggered.length > 0) {
+            ticket.rules_triggered.forEach(r => {
+                const li = document.createElement("li");
+                li.className = "text-xs text-amber-300 mb-1";
+                li.innerHTML = `• <strong>${r.rule_id}</strong>: ${r.consequent.action_required || 'Rule activated'}`;
+                rulesList.appendChild(li);
+            });
+        } else {
+            rulesList.innerHTML = `<li class="text-xs text-slate-400 italic">Standard operational routing rules applied.</li>`;
+        }
     }
 
-    // A* Plan
+    // Resolution Steps
     const planSteps = document.getElementById("detail-plan-steps");
-    planSteps.innerHTML = "";
-    if (ticket.resolution_plan && ticket.resolution_plan.length > 0) {
-        ticket.resolution_plan.forEach(step => {
-            const stepDiv = document.createElement("div");
-            stepDiv.className = "plan-timeline-step mb-3 text-xs";
-            stepDiv.innerHTML = `
-                <div class="flex items-center gap-2">
-                    <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">${step.step_number}</span>
-                    <span class="font-semibold text-slate-200">${step.action}</span>
-                    <span class="text-slate-400">(${step.actor})</span>
-                    <span class="ml-auto text-indigo-400 font-mono">${step.cumulative_hours}h</span>
-                </div>
-                <div class="text-slate-400 ml-7 mt-0.5">${step.description}</div>
-            `;
-            planSteps.appendChild(stepDiv);
-        });
+    if (planSteps) {
+        planSteps.innerHTML = "";
+        if (ticket.resolution_plan && ticket.resolution_plan.length > 0) {
+            ticket.resolution_plan.forEach(step => {
+                const stepDiv = document.createElement("div");
+                stepDiv.className = "plan-timeline-step mb-3 text-xs";
+                stepDiv.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-[10px]">${step.step_number}</span>
+                        <span class="font-semibold text-slate-200">${step.action}</span>
+                        <span class="text-slate-400">(${step.actor})</span>
+                        <span class="ml-auto text-indigo-400 font-mono text-[11px]">${step.cumulative_hours}h</span>
+                    </div>
+                    <div class="text-slate-400 ml-7 mt-0.5">${step.description}</div>
+                `;
+                planSteps.appendChild(stepDiv);
+            });
+        }
     }
 
     // Feedback rating section
     const feedbackSection = document.getElementById("detail-feedback-section");
-    if (ticket.status === "Resolved" || ticket.status === "Closed") {
-        feedbackSection.classList.remove("hidden");
-        document.getElementById("feedback-score-display").innerText = ticket.feedback_score ? `Rating: ${ticket.feedback_score} / 5 Stars` : "No rating given yet.";
-    } else {
-        feedbackSection.classList.add("hidden");
+    if (feedbackSection) {
+        if (ticket.status === "Resolved" || ticket.status === "Closed") {
+            feedbackSection.classList.remove("hidden");
+            document.getElementById("feedback-score-display").innerText = ticket.feedback_score ? `Current Student Rating: ${ticket.feedback_score} / 5 Stars` : "Pending student rating.";
+        } else {
+            feedbackSection.classList.add("hidden");
+        }
     }
 }
 
 function closeTicketDetailModal() {
-    document.getElementById("ticket-detail-modal").classList.add("hidden");
+    const modal = document.getElementById("ticket-detail-modal");
+    if (modal) modal.classList.add("hidden");
     selectedTicket = null;
 }
 
@@ -581,7 +625,7 @@ async function updateTicketStatus() {
     if (!selectedTicket) return;
     const newStatus = document.getElementById("detail-status-select").value;
     const notes = document.getElementById("detail-status-notes").value;
-    const staff = document.getElementById("detail-staff-name").value || "Admin Supervisor";
+    const staff = document.getElementById("detail-staff-name").value || "Duty Supervisor";
 
     try {
         const response = await fetch(`${API_BASE}/api/complaints/${selectedTicket.ticket_code}/status`, {
@@ -596,7 +640,7 @@ async function updateTicketStatus() {
 
         if (!response.ok) throw new Error("Failed to update status");
 
-        alert("Ticket status updated successfully!");
+        alert("Ticket status updated successfully.");
         closeTicketDetailModal();
         loadTickets();
         loadMetrics();
@@ -622,12 +666,12 @@ async function submitRating(stars) {
         loadMetrics();
         closeTicketDetailModal();
     } catch (err) {
-        alert("Error submitting feedback: " + err.message);
+        alert("Error submitting rating: " + err.message);
     }
 }
 
 
-// --- Analytics & Telemetry (Module X: Applications) ---
+// --- Telemetry & Analytics ---
 async function loadMetrics() {
     try {
         const response = await fetch(`${API_BASE}/api/metrics`);
@@ -663,8 +707,8 @@ function renderCharts(metrics) {
             datasets: [{
                 data: Object.values(metrics.categories_distribution),
                 backgroundColor: [
-                    '#6366f1', '#ec4899', '#f59e0b', '#10b981', '#3b82f6',
-                    '#8b5cf6', '#ef4444', '#14b8a6', '#f97316'
+                    '#4f46e5', '#3b82f6', '#06b6d4', '#10b981', '#f59e0b',
+                    '#8b5cf6', '#f43f5e', '#64748b', '#0ea5e9'
                 ],
                 borderWidth: 0
             }]
@@ -686,8 +730,8 @@ function renderCharts(metrics) {
             datasets: [{
                 label: 'Tickets',
                 data: Object.values(metrics.priorities_distribution),
-                backgroundColor: ['#22c55e', '#eab308', '#f97316', '#ef4444'],
-                borderRadius: 6
+                backgroundColor: ['#10b981', '#f59e0b', '#f97316', '#f43f5e'],
+                borderRadius: 4
             }]
         },
         options: {
@@ -705,7 +749,7 @@ function renderCharts(metrics) {
 }
 
 
-// --- FAI Syllabus & Agent Inspector ---
+// --- Workflow Diagnostics & Decision Architecture ---
 async function loadFaiDiagnostics() {
     try {
         const response = await fetch(`${API_BASE}/api/fai-diagnostics`);
@@ -716,26 +760,26 @@ async function loadFaiDiagnostics() {
         const peasContainer = document.getElementById("inspector-peas-container");
         if (peasContainer) {
             peasContainer.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
-                        <div class="font-bold text-xs text-indigo-400 mb-1">🎯 Performance Measure</div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800">
+                        <div class="font-semibold text-xs text-indigo-400 mb-1">Performance Measure</div>
                         <ul class="text-xs text-slate-300 space-y-1">
                             ${Object.entries(peas.performance_measures).map(([k, v]) => `<li>• <strong>${k}</strong>: ${v}</li>`).join('')}
                         </ul>
                     </div>
-                    <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
-                        <div class="font-bold text-xs text-emerald-400 mb-1">🌍 Environment</div>
+                    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800">
+                        <div class="font-semibold text-xs text-emerald-400 mb-1">Environment Domain</div>
                         <p class="text-xs text-slate-300 mb-1 font-semibold">${peas.environment.type}</p>
                         <p class="text-xs text-slate-400">${peas.environment.entities.slice(0, 4).join(', ')}...</p>
                     </div>
-                    <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
-                        <div class="font-bold text-xs text-amber-400 mb-1">🦾 Actuators</div>
+                    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800">
+                        <div class="font-semibold text-xs text-amber-400 mb-1">Action Channels</div>
                         <ul class="text-xs text-slate-300 space-y-1">
                             ${peas.actuators.map(a => `<li>• ${a}</li>`).join('')}
                         </ul>
                     </div>
-                    <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800">
-                        <div class="font-bold text-xs text-cyan-400 mb-1">📡 Sensors</div>
+                    <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800">
+                        <div class="font-semibold text-xs text-cyan-400 mb-1">Data Ingestion Channels</div>
                         <ul class="text-xs text-slate-300 space-y-1">
                             ${peas.sensors.map(s => `<li>• ${s}</li>`).join('')}
                         </ul>
@@ -748,13 +792,13 @@ async function loadFaiDiagnostics() {
         const opsContainer = document.getElementById("inspector-operators-container");
         if (opsContainer) {
             opsContainer.innerHTML = diag.planning_operators.map(op => `
-                <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800 text-xs">
+                <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-xs">
                     <div class="flex items-center justify-between mb-1">
-                        <span class="font-bold text-indigo-300">${op.name}</span>
-                        <span class="text-slate-400 font-mono">Cost: ${op.cost_hours}h</span>
+                        <span class="font-semibold text-indigo-300">${op.name}</span>
+                        <span class="text-slate-400 font-mono text-[11px]">Duration: ${op.cost_hours}h</span>
                     </div>
                     <div class="text-slate-400 mb-1">${op.description}</div>
-                    <div class="text-[11px] text-slate-500">Actor: <span class="text-slate-300">${op.actor}</span></div>
+                    <div class="text-[11px] text-slate-500">Executing Officer: <span class="text-slate-300">${op.actor}</span></div>
                 </div>
             `).join('');
         }
@@ -763,29 +807,29 @@ async function loadFaiDiagnostics() {
         const rulesContainer = document.getElementById("inspector-rules-container");
         if (rulesContainer) {
             rulesContainer.innerHTML = diag.inference_rule_base.map(r => `
-                <div class="p-3 bg-slate-900/60 rounded-lg border border-slate-800 text-xs">
+                <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800 text-xs">
                     <div class="flex items-center justify-between mb-1">
-                        <span class="font-bold text-amber-300">${r.rule_id}</span>
-                        <span class="text-slate-500">${r.module}</span>
+                        <span class="font-semibold text-amber-300">${r.rule_id}</span>
+                        <span class="text-slate-500 text-[11px]">${r.module}</span>
                     </div>
                     <div class="text-slate-300 mb-1"><strong>Action:</strong> ${r.consequent.action_required || 'Standard rule'}</div>
-                    <div class="text-[11px] text-slate-400 italic">Ref: ${r.consequent.policy_reference || 'Campus Ordinance'}</div>
+                    <div class="text-[11px] text-slate-400 italic">Reference: ${r.consequent.policy_reference || 'Campus Guidelines'}</div>
                 </div>
             `).join('');
         }
     } catch (err) {
-        console.error("Failed to load FAI diagnostics:", err);
+        console.error("Failed to load diagnostics:", err);
     }
 }
 
 
-// --- Module IV: Constraint Satisfaction Problem (CSP) Trigger ---
+// --- Constraint Satisfaction Problem (CSP) Specialist Allocation ---
 async function triggerCspDispatch() {
     const btn = document.getElementById("run-csp-btn");
     if (btn) btn.disabled = true;
 
     const resEl = document.getElementById("inspector-csp-result");
-    if (resEl) resEl.innerText = "Running Backtracking Search + MRV + Forward Checking...";
+    if (resEl) resEl.innerText = "Evaluating specialist domain qualifications and workload constraints...";
 
     try {
         const response = await fetch(`${API_BASE}/api/csp/dispatch`, { method: "POST" });
@@ -794,11 +838,11 @@ async function triggerCspDispatch() {
         const assignments = data.assignments || {};
         const tel = data.telemetry || {};
 
-        let summaryText = `[CSP SOLVER - MODULE IV SUCCESS]\n`;
+        let summaryText = `[SPECIALIST ALLOCATION OPTIMIZATION - CSP COMPLETE]\n`;
         summaryText += `Algorithm: ${tel.algorithm || 'Backtracking + MRV'}\n`;
-        summaryText += `Total Constraints Evaluated: ${tel.constraint_checks || 0}\n`;
+        summaryText += `Constraint Checks: ${tel.constraint_checks || 0}\n`;
         summaryText += `Backtracks: ${tel.backtracks || 0}\n`;
-        summaryText += `Allocations Assigned: ${Object.keys(assignments).length}\n\n`;
+        summaryText += `Assignments Allocated: ${Object.keys(assignments).length}\n\n`;
 
         for (const [code, alloc] of Object.entries(assignments)) {
             summaryText += `• ${code} (${alloc.category}, ${alloc.priority}) ➔ ${alloc.assigned_staff_name}\n`;
@@ -806,23 +850,23 @@ async function triggerCspDispatch() {
 
         if (resEl) resEl.innerText = summaryText;
 
-        alert(`CSP Dispatch Completed Successfully!\n${Object.keys(assignments).length} tickets assigned to qualified campus specialists without violating capacity constraints.`);
+        alert(`Specialist Allocation Completed!\n${Object.keys(assignments).length} tickets assigned to qualified department personnel without exceeding capacity limits.`);
 
         loadTickets();
         loadMetrics();
     } catch (err) {
-        if (resEl) resEl.innerText = "Error solving CSP: " + err.message;
-        alert("Error executing CSP: " + err.message);
+        if (resEl) resEl.innerText = "Error during allocation: " + err.message;
+        alert("Error executing allocation: " + err.message);
     } finally {
         if (btn) btn.disabled = false;
     }
 }
 
 
-// --- Module II vs Module III: Search Algorithm Benchmark ---
+// --- Search Algorithm Comparison ---
 async function runSearchComparison() {
     const resEl = document.getElementById("inspector-search-compare-result");
-    if (resEl) resEl.innerText = "Benchmarking A* (Informed) vs Uniform Cost Search (Uninformed)...";
+    if (resEl) resEl.innerText = "Benchmarking Informed A* vs Uniform Cost Search...";
 
     try {
         const response = await fetch(`${API_BASE}/api/planning/compare-search`, {
@@ -841,30 +885,30 @@ async function runSearchComparison() {
         const ucs = data.uniform_cost_search_uninformed.telemetry;
         const comp = data.academic_comparison;
 
-        let output = `[SEARCH COMPARISON BENCHMARK - MODULE II vs III]\n\n`;
-        output += `1. A* SEARCH (Informed, f = g + h):\n`;
-        output += `   • Nodes Expanded: ${astar.nodes_expanded}\n`;
+        let output = `[SEARCH ALGORITHM BENCHMARK - RESOLUTION TRAJECTORY]\n\n`;
+        output += `1. INFORMED A* SEARCH (f = g + h):\n`;
+        output += `   • State Nodes Expanded: ${astar.nodes_expanded}\n`;
         output += `   • Nodes Generated: ${astar.nodes_generated}\n`;
-        output += `   • Optimal Path Duration: ${astar.path_cost_hours} hrs (${astar.total_steps} steps)\n\n`;
+        output += `   • Path Duration: ${astar.path_cost_hours} hrs (${astar.total_steps} milestones)\n\n`;
 
-        output += `2. UNIFORM COST SEARCH (Uninformed, f = g, h = 0):\n`;
-        output += `   • Nodes Expanded: ${ucs.nodes_expanded}\n`;
+        output += `2. UNIFORM COST SEARCH (f = g, h = 0):\n`;
+        output += `   • State Nodes Expanded: ${ucs.nodes_expanded}\n`;
         output += `   • Nodes Generated: ${ucs.nodes_generated}\n`;
-        output += `   • Optimal Path Duration: ${ucs.path_cost_hours} hrs (${ucs.total_steps} steps)\n\n`;
+        output += `   • Path Duration: ${ucs.path_cost_hours} hrs (${ucs.total_steps} milestones)\n\n`;
 
-        output += `ACADEMIC CONCLUSION:\n`;
+        output += `CONCLUSION:\n`;
         output += `• ${comp.nodes_expanded_difference}\n`;
         output += `• ${comp.search_pruning_efficiency}\n`;
-        output += `• Both algorithms guarantee optimal cost, but A* achieves it with significantly fewer node expansions due to admissible heuristic h(n).`;
+        output += `• Both approaches find the optimal trajectory, but A* prunes unnecessary branch explorations with admissible heuristic guidance.`;
 
         if (resEl) resEl.innerText = output;
     } catch (err) {
-        if (resEl) resEl.innerText = "Error running search benchmark: " + err.message;
+        if (resEl) resEl.innerText = "Error running benchmark: " + err.message;
     }
 }
 
 
-// --- Emergency Reporting & Alert System ---
+// --- Emergency Safety Report System ---
 function initEmergencyFeatures() {
     const sosForm = document.getElementById("emergency-sos-form");
     if (sosForm) {
@@ -886,47 +930,24 @@ function closeEmergencyModal() {
     }
 }
 
+// Emergency banner is intentionally disabled per design requirements
 function updateEmergencyBanner() {
-    const banner = document.getElementById("global-emergency-banner");
-    const bannerText = document.getElementById("emergency-banner-text");
-    if (!banner || !bannerText) return;
-
-    const activeEmergencies = allTickets.filter(
-        t => (t.priority === "Emergency" || t.category === "Anti-Ragging & Safety") &&
-             t.status !== "Resolved" && t.status !== "Closed"
-    );
-
-    if (activeEmergencies.length > 0) {
-        banner.classList.remove("hidden");
-        const latest = activeEmergencies[0];
-        bannerText.innerHTML = `<span class="font-mono font-bold text-white">${latest.ticket_code}</span>: ${latest.subject} (${latest.location || 'Campus Wide'}) &bull; Escalated to Proctorial Board & Dean`;
-        banner.setAttribute("data-emergency-ticket", latest.ticket_code);
-    } else {
-        banner.classList.add("hidden");
-    }
-}
-
-function viewActiveEmergencyTicket() {
-    const banner = document.getElementById("global-emergency-banner");
-    const ticketCode = banner?.getAttribute("data-emergency-ticket");
-    if (ticketCode) {
-        openTicketDetail(ticketCode);
-    } else {
-        switchTab("admin");
-    }
+    // Intentionally no-op to maintain clean institutional layout
 }
 
 async function submitEmergencySOS(e) {
     e.preventDefault();
     const btn = document.getElementById("sos-submit-btn");
-    btn.disabled = true;
-    btn.innerHTML = `<span>🚨 Transmitting Emergency to Proctorial Board...</span>`;
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<span>Submitting Confidential Safety Report...</span>`;
+    }
 
-    const category = document.getElementById("sos-category").value;
-    const location = document.getElementById("sos-location").value;
-    const subject = document.getElementById("sos-subject").value;
-    const desc = document.getElementById("sos-description").value;
-    const isAnon = document.getElementById("sos-anonymous").checked;
+    const category = document.getElementById("sos-category")?.value || "Anti-Ragging & Safety";
+    const location = document.getElementById("sos-location")?.value || "";
+    const subject = document.getElementById("sos-subject")?.value || "";
+    const desc = document.getElementById("sos-description")?.value || "";
+    const isAnon = document.getElementById("sos-anonymous")?.checked || false;
 
     const payload = {
         student_name: isAnon ? "Anonymous Student" : "Emergency Reporter",
@@ -934,8 +955,8 @@ async function submitEmergencySOS(e) {
         email: "",
         phone: "",
         is_anonymous: isAnon,
-        subject: `[EMERGENCY SOS] ${subject}`,
-        description: `URGENT CAMPUS EMERGENCY DISPATCH: ${desc}`,
+        subject: `[SAFETY ESCALATION] ${subject}`,
+        description: `URGENT CAMPUS SAFETY NOTIFICATION: ${desc}`,
         location: location,
         category: category
     };
@@ -947,21 +968,19 @@ async function submitEmergencySOS(e) {
             body: JSON.stringify(payload)
         });
 
-        if (!response.ok) throw new Error("Emergency dispatch failed");
+        if (!response.ok) throw new Error("Safety escalation submission failed");
+
         const ticket = await response.json();
-
         closeEmergencyModal();
-        alert(`🚨 EMERGENCY REPORTED & TRANSMITTED!\n\nTicket Code: ${ticket.ticket_code}\nPriority: ${ticket.priority}\nAssigned: ${ticket.assigned_department}\nSLA: ${ticket.sla_hours} Hours\n\nDean of Student Welfare & Proctorial Board have been alerted via forward-chaining rules.`);
-
-        await loadTickets();
-        await loadMetrics();
-        openTicketDetail(ticket.ticket_code);
+        alert(`Urgent Safety Report Registered (${ticket.ticket_code}).\n\nNotification dispatched to Chief Proctor and Student Welfare Dean with immediate response protocol.`);
+        loadTickets();
+        loadMetrics();
     } catch (err) {
-        alert("Failed to report emergency: " + err.message);
+        alert("Error dispatching urgent report: " + err.message);
     } finally {
-        btn.disabled = false;
-        btn.innerHTML = `<span>⚡ TRANSMIT EMERGENCY DISPATCH</span>`;
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = `<span>Submit Urgent Safety Report</span>`;
+        }
     }
 }
-
-
