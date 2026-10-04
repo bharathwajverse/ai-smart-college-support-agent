@@ -1,0 +1,252 @@
+{
+  "institution_name": "Apex Institute of Science and Technology",
+  "academic_year": "2024-2025",
+  "categories": [
+    {
+      "id": "ANTI_RAGGING",
+      "name": "Anti-Ragging & Safety",
+      "department": "Proctorial Board & Anti-Ragging Cell",
+      "head": "Chief Proctor / Dean of Student Welfare",
+      "default_sla_hours": 2,
+      "severity_base": 1.0,
+      "keywords": ["ragging", "harassment", "bully", "threat", "abuse", "forced", "violence", "intimidate", "stalking", "senior", "assault"],
+      "action_team": "Immediate Action Task Force",
+      "mandatory_dean_alert": true
+    },
+    {
+      "id": "MESS",
+      "name": "Mess & Canteen",
+      "department": "Hostel & Mess Management Committee",
+      "head": "Chief Warden & Health Inspector",
+      "default_sla_hours": 6,
+      "severity_base": 0.8,
+      "keywords": ["food", "mess", "canteen", "insects", "stale", "hygiene", "vomit", "sick", "dinner", "lunch", "breakfast", "meal", "water purifier", "ro water"],
+      "action_team": "Catering Inspection Team",
+      "mandatory_dean_alert": false
+    },
+    {
+      "id": "HOSTEL",
+      "name": "Hostel",
+      "department": "Estate & Hostel Administration",
+      "head": "Wardens Council",
+      "default_sla_hours": 12,
+      "severity_base": 0.6,
+      "keywords": ["hostel room", "geyser", "water supply", "drinking water", "electricity", "fan", "washroom", "plumbing", "bed", "door lock", "cleanliness", "warden", "carpenter", "roommate", "allotment", "curfew"],
+      "action_team": "Hostel Maintenance Crew",
+      "mandatory_dean_alert": false
+    },
+    {
+      "id": "IT_FACILITIES",
+      "name": "IT & Infrastructure",
+      "department": "Computer Centre & Network Operations",
+      "head": "Head of IT Infrastructure",
+      "default_sla_hours": 24,
+      "severity_base": 0.5,
+      "keywords": ["wifi", "wi-fi", "internet", "router", "lan", "portal", "erp", "login", "password", "server", "lab computer", "printer", "network", "bandwidth", "ip address", "connectivity", "disconnect", "ethernet"],
+      "action_team": "Network Engineering Squad",
+      "mandatory_dean_alert": false
+    },
+    {
+      "id": "ACADEMICS",
+      "name": "Academics",
+      "department": "Academic Affairs Office",
+      "head": "Dean (Academics)",
+      "default_sla_hours": 48,
+      "severity_base": 0.5,
+      "keywords": ["attendance", "course", "faculty", "syllabus", "assignment", "lecture", "professor", "class", "lab session", "timetable", "condonation"],
+      "action_team": "Department Academic Coordinator",
+      "mandatory_dean_alert": false
+    },
+    {
+      "id": "EXAMINATIONS",
+      "name": "Examinations",
+      "department": "Office of the Controller of Examinations",
+      "head": "Controller of Examinations",
+      "default_sla_hours": 36,
+      "severity_base": 0.6,
+      "keywords": ["exam", "hall ticket", "admit card", "re-evaluation", "results", "grade", "backlog", "supplementary", "marksheet", "cgpa", "sgpa"],
+      "action_team": "Exam Evaluation Cell",
+      "mandatory_dean_alert": false
+    },
+    {
+      "id": "ACCOUNTS_FEE",
+      "name": "Accounts & Fees",
+      "department": "Finance & Accounts Section",
+      "head": "Finance Officer",
+      "default_sla_hours": 48,
+      "severity_base": 0.4,
+      "keywords": ["fee", "payment", "receipt", "refund", "scholarship", "fine", "challan", "tuition", "bank", "transaction", "dues", "no dues"],
+      "action_team": "Accounts Helpdesk",
+      "mandatory_dean_alert": false
+    },
+    {
+      "id": "LIBRARY",
+      "name": "Library",
+      "department": "Central Library",
+      "head": "Chief Librarian",
+      "default_sla_hours": 48,
+      "severity_base": 0.3,
+      "keywords": ["library", "book", "fine", "overdue", "journal", "ieee", "id card", "borrow", "reading room", "access"],
+      "action_team": "Library Desk Staff",
+      "mandatory_dean_alert": false
+    },
+    {
+      "id": "TRANSPORT",
+      "name": "Transport",
+      "department": "Transport Management Cell",
+      "head": "Transport Officer",
+      "default_sla_hours": 24,
+      "severity_base": 0.4,
+      "keywords": ["bus", "route", "driver", "transport", "pass", "shuttle", "breakdown", "schedule", "stop"],
+      "action_team": "Fleet Manager",
+      "mandatory_dean_alert": false
+    },
+    {
+      "id": "GENERAL",
+      "name": "General",
+      "department": "Office of Student Affairs & General Administration",
+      "head": "Dean of Student Welfare",
+      "default_sla_hours": 48,
+      "severity_base": 0.3,
+      "keywords": ["general", "inquiry", "helpdesk", "feedback", "suggestion", "lost and found", "notice", "identity card", "campus gate"],
+      "action_team": "Student Helpdesk Coordinator",
+      "mandatory_dean_alert": false
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "RULE_RAGGING_ZERO_TOLERANCE",
+      "module": "Module V & VI: Inference & Propositional Logic",
+      "antecedent": {
+        "or": [
+          {"field": "category", "equals": "Anti-Ragging & Safety"},
+          {"field": "text", "contains_any": ["ragging", "harassment", "bully", "physical violence", "forced to do"]}
+        ]
+      },
+      "consequent": {
+        "set_priority": "Emergency",
+        "set_sla_hours": 2,
+        "set_mandatory_alert": "Dean of Student Welfare & Anti-Ragging Cell",
+        "action_required": "Initiate confidential inquiry under UGC Regulations 2009 within 2 hours; provide counseling and physical security.",
+        "policy_reference": "UGC Anti-Ragging Regulation Clause 7 (Zero-Tolerance Policy)"
+      }
+    },
+    {
+      "rule_id": "RULE_FOOD_SAFETY_EMERGENCY",
+      "module": "Module V & VI: Inference & First Order Logic",
+      "antecedent": {
+        "and": [
+          {"field": "category", "in": ["Mess & Canteen", "Hostel"]},
+          {"field": "text", "contains_any": ["food poisoning", "insects in food", "worm", "insect", "cockroach", "dead insect", "hospitalized", "vomiting", "stomach pain", "contaminated water"]}
+        ]
+      },
+      "consequent": {
+        "set_priority": "Emergency",
+        "set_sla_hours": 4,
+        "set_mandatory_alert": "Health Officer & Chief Warden",
+        "action_required": "Seize food batch sample for lab analysis; dispatch medical team; inspect mess vendor contract.",
+        "policy_reference": "FSSAI Campus Food Safety Standard Sec 14.2"
+      }
+    },
+    {
+      "rule_id": "RULE_INFRASTRUCTURE_WIDESPREAD_OUTAGE",
+      "module": "Module V & VI: Forward Chaining Inference",
+      "antecedent": {
+        "and": [
+          {"field": "category", "in": ["Hostel", "IT & Infrastructure"]},
+          {"field": "text", "contains_any": ["entire block", "whole hostel", "no water in building", "complete blackout", "all floors", "power outage", "water supply completely stopped", "water stopped", "no water in washrooms", "power cut", "blackout", "no water"]}
+        ]
+      },
+      "consequent": {
+        "set_priority": "High",
+        "set_sla_hours": 4,
+        "set_mandatory_alert": "Executive Engineer (Civil/Electrical)",
+        "action_required": "Deploy emergency maintenance team; arrange water tankers / backup generator; post status broadcast.",
+        "policy_reference": "Campus Essential Services Emergency Protocol Act 4"
+      }
+    },
+    {
+      "rule_id": "RULE_ATTENDANCE_CONDONATION",
+      "module": "Module V & VI: Knowledge-Based Policy Inference",
+      "antecedent": {
+        "and": [
+          {"field": "category", "equals": "Academics"},
+          {"field": "text", "contains_any": ["attendance shortage", "medical leave", "condonation", "hall ticket detained"]}
+        ]
+      },
+      "consequent": {
+        "set_priority": "Medium",
+        "set_sla_hours": 24,
+        "set_mandatory_alert": "Head of Department (HoD)",
+        "action_required": "Verify medical certificate within 7 days of absence; calculate if attendance >= 65% for condonation board.",
+        "policy_reference": "Academic Ordinance Section 8.3: Minimum 75% required; 65%-74% allowed only on medical/sports grounds with authorized Dean approval."
+      }
+    },
+    {
+      "rule_id": "RULE_FEE_DOUBLE_DEBIT",
+      "module": "Module V & VI: Logic Reasoning",
+      "antecedent": {
+        "and": [
+          {"field": "category", "equals": "Accounts & Fees"},
+          {"field": "text", "contains_any": ["double deducted", "twice", "debited twice", "money deducted but receipt not generated", "failed transaction"]}
+        ]
+      },
+      "consequent": {
+        "set_priority": "Medium",
+        "set_sla_hours": 24,
+        "set_mandatory_alert": "Finance Officer / Bank Nodal Officer",
+        "action_required": "Trace UTR / Transaction reference with payment gateway; process auto-reversal within 3-5 business days.",
+        "policy_reference": "Fee Accounting & Reconciliation Policy Sec 11"
+      }
+    },
+    {
+      "rule_id": "RULE_EXAM_HALL_TICKET_IMMEDIATE",
+      "module": "Module V & VI: Forward Chaining",
+      "antecedent": {
+        "and": [
+          {"field": "category", "equals": "Examinations"},
+          {"field": "text", "contains_any": ["tomorrow exam", "exam starting", "admit card not downloaded", "cannot download hall ticket", "exam today"]}
+        ]
+      },
+      "consequent": {
+        "set_priority": "High",
+        "set_sla_hours": 6,
+        "set_mandatory_alert": "Controller of Examinations (CoE)",
+        "action_required": "Issue emergency provisional hall ticket at exam control room; clear ERP blockage.",
+        "policy_reference": "Examination Manual Guideline 5.1 (Provisional Admit Protocol)"
+      }
+    }
+  ],
+  "faq_knowledge": [
+    {
+      "topic": "Attendance Rules",
+      "keywords": ["attendance", "minimum", "percent", "condonation", "medical", "shortage"],
+      "answer": "Minimum attendance required to appear for end-semester exams is 75%. Students with 65% to 74% can apply for medical condonation by submitting original hospital records to the Dean of Academics within 7 working days. Attendance below 65% requires repeating the course."
+    },
+    {
+      "topic": "Hostel Curfew & Gate Pass",
+      "keywords": ["curfew", "in-time", "gate pass", "night out", "outing", "hostel timing"],
+      "answer": "Hostel in-time is 9:30 PM for all students on weekdays and 10:00 PM on weekends. Out-station leaves require digital parent approval via the College ERP Portal at least 24 hours in advance."
+    },
+    {
+      "topic": "WiFi and Campus Internet Access",
+      "keywords": ["wifi", "password", "mac address", "internet", "portal", "login", "register laptop"],
+      "answer": "Students can register up to two devices on the campus network. Submit your device MAC address at the IT Helpdesk (Room 104, Admin Block) or via the ERP portal under IT Services. Bandwidth is 100 Mbps per student."
+    },
+    {
+      "topic": "Fee Refund & Payment Issues",
+      "keywords": ["refund", "fee", "payment", "bank", "receipt", "deducted"],
+      "answer": "If your account was debited but no receipt was generated, wait 24 hours for bank reconciliation. If still uncredited, submit a ticket with your Bank Transaction UTR Number. Refunds adhere strictly to UGC guidelines based on the withdrawal date."
+    },
+    {
+      "topic": "Exam Re-evaluation & Grade Grievance",
+      "keywords": ["re-evaluation", "rechecking", "grade", "marks", "supplementary", "arrear", "result"],
+      "answer": "Re-evaluation applications open within 10 days of results announcement on the COE portal. The fee is ₹500 per paper. Answer script photocopy can be requested for ₹300."
+    },
+    {
+      "topic": "Anti-Ragging and Grievance Redressal",
+      "keywords": ["ragging", "helpline", "complaint", "harassment", "emergency", "safety"],
+      "answer": "Ragging is a criminal offense with strict zero-tolerance. File an anonymous or direct complaint here, or call the 24x7 Campus Anti-Ragging Helpline at 1800-180-5522. Every complaint is investigated confidentially within 2 hours."
+    }
+  ]
+}
