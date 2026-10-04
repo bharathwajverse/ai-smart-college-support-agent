@@ -1,5 +1,6 @@
 import os
 import sys
+from fastapi import Request
 
 # Ensure the project root directory is on the Python path
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -8,16 +9,21 @@ if ROOT_DIR not in sys.path:
 
 from backend.main import app
 
+
 @app.middleware("http")
-async def ensure_api_prefix(request, call_next):
+async def handle_vercel_routing(request: Request, call_next):
     """
-    Ensures that requests forwarded by Vercel serverless function router
-    correctly match FastAPI route definitions regardless of whether the /api
-    prefix was preserved or stripped.
+    Normalizes paths for Vercel serverless functions.
+    Extracts the matched subpath from the rewrite parameter and updates
+    request.scope['path'] so that FastAPI routes match cleanly.
     """
-    path = request.scope.get("path", "")
-    if path and not path.startswith("/api") and not path.startswith("/docs") and not path.startswith("/openapi.json"):
-        request.scope["path"] = "/api" + path
+    match = request.query_params.get("match")
+    if match:
+        clean = match.lstrip("/")
+        if clean in ["docs", "openapi.json"]:
+            request.scope["path"] = f"/{clean}"
+        else:
+            request.scope["path"] = f"/api/{clean}"
     return await call_next(request)
 
 
